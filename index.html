@@ -1,0 +1,3349 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Medicine — Written Q&A</title>
+<style>
+  :root {
+    --bg: #f9f7f4;
+    --surface: #ffffff;
+    --border: #d8d2c8;
+    --accent: #1a5276;
+    --accent2: #c0392b;
+    --accent3: #1e8449;
+    --ans-bg: #f0f7ff;
+    --ans-border: #a8c8e8;
+    --text: #1c1c1c;
+    --muted: #555;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.75; padding: 0 0 80px; }
+  header { background: var(--accent); color: #fff; padding: 26px 40px 20px; }
+  header h1 { font-size: 1.5rem; font-weight: bold; }
+  header p { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; font-family: sans-serif; }
+
+  .toc { background: var(--surface); border-bottom: 2px solid var(--border); padding: 16px 40px; display: flex; flex-wrap: wrap; gap: 9px; }
+  .toc a { text-decoration: none; background: #eaf0fb; color: var(--accent); border: 1px solid #b8cde8; border-radius: 4px; padding: 3px 10px; font-size: 0.8rem; font-family: sans-serif; font-weight: 600; }
+  .toc a:hover { background: #d0e3f7; }
+
+  main { max-width: 880px; margin: 0 auto; padding: 28px 20px; }
+
+  .chapter { margin-bottom: 48px; }
+  .chapter-header { background: var(--accent); color: #fff; border-radius: 6px 6px 0 0; padding: 10px 20px; font-family: sans-serif; font-size: 1rem; font-weight: bold; }
+  .chapter-body { background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; overflow: hidden; }
+
+  .q-block { border-bottom: 1px solid #e8e4de; }
+  .q-block:last-child { border-bottom: none; }
+
+  .q-head { padding: 16px 20px 10px; }
+  .q-meta { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; font-family: sans-serif; font-size: 0.77rem; }
+  .q-num { background: var(--accent); color: #fff; border-radius: 3px; padding: 1px 8px; font-weight: bold; }
+  .q-type { border-radius: 3px; padding: 1px 8px; font-weight: 600; font-size: 0.74rem; border: 1px solid; }
+  .type-enum  { background: #fef9e7; color: #7d6608; border-color: #f0c040; }
+  .type-def   { background: #eafaf1; color: #1e6a37; border-color: #58d68d; }
+  .type-comp  { background: #fdf2f8; color: #7d1a60; border-color: #d98dd9; }
+  .type-case  { background: #fdf0e8; color: #8c3a0e; border-color: #eb8a4a; }
+  .type-det   { background: #e8f4fd; color: #1a4a7a; border-color: #5ba4d8; }
+  .type-list  { background: #f4ecfd; color: #5b1e8c; border-color: #b98ade; }
+  .type-out   { background: #e8fdf0; color: #0e6630; border-color: #3dbb6e; }
+  .type-disc  { background: #fef5e7; color: #7e4500; border-color: #f0a030; }
+  .type-note  { background: #e8f7fd; color: #0a5a78; border-color: #4ab8e0; }
+  .aplus { background: #c0392b; color: #fff; border-radius: 3px; padding: 1px 6px; font-size: 0.7rem; font-weight: bold; font-family: sans-serif; }
+
+  .q-text { font-size: 0.97rem; font-weight: bold; color: var(--text); }
+
+  /* Toggle answer button */
+  .toggle-btn {
+    display: inline-block;
+    margin: 8px 0 0 0;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-family: sans-serif;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .toggle-btn:hover { background: #154360; }
+  .toggle-btn.open { background: #1e8449; }
+
+  .answer-box {
+    display: none;
+    background: var(--ans-bg);
+    border-top: 2px solid var(--ans-border);
+    padding: 14px 22px 16px;
+    font-size: 0.92rem;
+  }
+  .answer-box.visible { display: block; }
+
+  .answer-box ul { padding-left: 20px; margin: 6px 0; }
+  .answer-box li { margin-bottom: 3px; }
+  .answer-box p { margin: 5px 0; }
+  .answer-box h4 { margin: 10px 0 4px; color: var(--accent); font-size: 0.9rem; font-family: sans-serif; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.88rem; }
+  th { background: var(--accent); color: #fff; padding: 6px 10px; text-align: left; font-family: sans-serif; font-size: 0.82rem; }
+  td { padding: 6px 10px; border: 1px solid #c8d8e8; vertical-align: top; }
+  tr:nth-child(even) td { background: #e8f0fa; }
+
+  .case-box { background: #fff8f0; border: 1.5px solid #e8b88a; border-radius: 5px; padding: 11px 15px; margin-bottom: 8px; font-size: 0.91rem; }
+  .case-box strong { color: #8c3a0e; }
+
+  .ans-label { font-family: sans-serif; font-size: 0.75rem; font-weight: bold; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+
+  @media(max-width:600px){ header{padding:16px;} main{padding:12px 6px;} .answer-box{padding:10px 12px;} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Community Medicine — Written Exam Q&amp;A</h1>
+  <p>Full coverage with answers · All question types · Dr. Gamal curriculum</p>
+</header>
+
+<div class="toc">
+  <a href="#ch1">1. Management</a>
+  <a href="#ch2">2. Occ. Lung</a>
+  <a href="#ch3">3. Environment</a>
+  <a href="#ch4">4. Health Ed.</a>
+  <a href="#ch5">5. Prevention</a>
+  <a href="#ch6">6. Airborne</a>
+  <a href="#ch7">7. Foodborne</a>
+  <a href="#ch8">8. Contact</a>
+  <a href="#ch9">9. Malaria</a>
+  <a href="#ch10">10. Emerging</a>
+  <a href="#ch11">11. NCDs</a>
+  <a href="#ch12">12. Nutrition</a>
+  <a href="#env-case">Env. Cases</a>
+</div>
+
+<main>
+HTMLEOF
+echo "Header written"
+<!-- ══════════════ CH1 MANAGEMENT ══════════════ -->
+<div class="chapter" id="ch1">
+  <div class="chapter-header">1 — MANAGEMENT</div>
+  <div class="chapter-body">
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Situational Analysis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Study of the <strong>nature, distribution, importance, and contributing factors</strong> of health problems in a community, performed at the start of the planning process.</p>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the steps of Situational Analysis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Step 1:</strong> Data collection (records, surveys, census, interviews, expert opinion)</li>
+          <li><strong>Step 2:</strong> SWOT analysis (internal + external factors)</li>
+          <li><strong>Step 3:</strong> Problem statement formulation (needs assessment)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss SWOT analysis: definition, internal vs external factors, with examples.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>SWOT is a framework used to evaluate internal and external factors affecting a health program.</p>
+        <table>
+          <tr><th>Factor</th><th>Type</th><th>Example</th></tr>
+          <tr><td><strong>Strengths</strong></td><td>Internal</td><td>Availability of equipment, trained staff, resources</td></tr>
+          <tr><td><strong>Weaknesses</strong></td><td>Internal</td><td>Outdated machines, shortage of staff, slow service</td></tr>
+          <tr><td><strong>Opportunities</strong></td><td>External</td><td>Partnership with medical schools, government grants</td></tr>
+          <tr><td><strong>Threats</strong></td><td>External</td><td>High retirement rate, loss of patients to other hospitals</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the criteria for selecting priority problems on a community basis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Extent of the problem (incidence, prevalence)</li>
+          <li>Seriousness (urgency, severity, nature)</li>
+          <li>Economic and social cost</li>
+          <li>Feasibility of solution (cheap, rapid, available)</li>
+          <li>Alignment with community policy priorities</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the types of planning in health management.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Strategic planning:</strong> Long-term (1–5 years), broad goals, resource allocation</li>
+          <li><strong>Tactical planning:</strong> Short-term (&lt;1 year), specific objectives supporting strategic goals</li>
+          <li><strong>Operational planning:</strong> Standards, policies, procedures in functional areas</li>
+          <li><strong>Contingency planning:</strong> Alternative actions for crises or failures</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Strategic planning and Tactical planning.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Strategic</th><th>Tactical</th></tr>
+          <tr><td>Duration</td><td>Long-term (1–5 years)</td><td>Short-term (&lt;1 year)</td></tr>
+          <tr><td>Scope</td><td>Broad organizational goals</td><td>Specific objectives to support strategic goals</td></tr>
+          <tr><td>Focus</td><td>Resource allocation, direction</td><td>Operational steps, tasks</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Vision, Mission, Goals, and Objectives with examples.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Term</th><th>Definition</th><th>Example</th></tr>
+          <tr><td>Vision</td><td>Inspirational long-term future dream (end goal)</td><td>"A community where all children grow up at a healthy weight"</td></tr>
+          <tr><td>Mission</td><td>Purpose/reason for existing + major commitments (why we are here)</td><td>"Reduce childhood obesity through school partnerships"</td></tr>
+          <tr><td>Goals</td><td>Broad statements of what will be accomplished</td><td>"Decrease obesity prevalence in school children"</td></tr>
+          <tr><td>Objectives</td><td>Specific, measurable steps (SMART/SMARTER)</td><td>"Decrease body weight by 2.5 kg in 60 days"</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Objective. What are the SMART criteria?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>An objective is a <strong>specific, measurable step</strong> toward achieving a goal.</p>
+        <p><strong>SMART:</strong> Specific — Measurable — Achievable — Relevant — Time-bound</p>
+        <p><em>Example:</em> "Decrease body weight by 2.5 kg in 60 days."</p>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between SMART and SMARTER objectives. Give an example of each.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>SMART</th><th>SMARTER</th></tr>
+          <tr><td>Letters</td><td>Specific, Measurable, Achievable, Relevant, Time-bound</td><td>Adds: Evaluate + Readjust</td></tr>
+          <tr><td>Feedback loop</td><td>No built-in re-evaluation</td><td>Includes periodic evaluation and plan adjustment</td></tr>
+          <tr><td>Example</td><td>"Decrease body weight by 2.5 kg in 60 days"</td><td>"Achieve 10,000 steps daily, reduce body fat by 3% in 6 months, evaluate monthly, readjust if needed"</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the functions of implementation in health management.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Organizing (hierarchical structure)</li>
+          <li>Staffing (selection and training)</li>
+          <li>Directing and leadership (influence and motivation)</li>
+          <li>Coordination and team building</li>
+          <li>Recording and reporting</li>
+          <li>Monitoring</li>
+          <li>Supervision</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the methods of supervision in health management.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Observation</li>
+          <li>Checklists</li>
+          <li>Records</li>
+          <li>Report review</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the role of supervision in health management: definition, goals, and methods.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Ensuring staff perform duties effectively with competency to maintain work standards.</p>
+        <h4>Goals:</h4>
+        <ul>
+          <li>Maintain quantity and quality of health team work</li>
+          <li>Assess performance of team members</li>
+          <li>Identify causes of work deficiency</li>
+          <li>Resolve disputes among team members</li>
+          <li>Help in solving personal problems</li>
+          <li>On-job training</li>
+        </ul>
+        <h4>Methods:</h4>
+        <ul><li>Observation, Checklists, Records, Report review</li></ul>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q13</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Monitoring and Evaluation in health management.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Monitoring</th><th>Evaluation</th></tr>
+          <tr><td>Definition</td><td>Regular checking of ongoing activities, detecting deviations, corrective measures</td><td>Comprehensive assessment of goals, performance, cost-effectiveness, sustainability</td></tr>
+          <tr><td>Timing</td><td>Continuous / real-time</td><td>At defined intervals or end of program</td></tr>
+          <tr><td>Tools</td><td>Records, reports, observation</td><td>KPIs, indicator calculations, expert opinion, customer feedback</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q14</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the tools used in Evaluation.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>KPIs (Key Performance Indicators)</li>
+          <li>Indicator calculations</li>
+          <li>Expert opinion</li>
+          <li>Customer and job-owner feedback</li>
+          <li>Assessment of goals, performance, cost-effectiveness, and sustainability</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q15</span><span class="q-type type-out">Outline</span><span class="aplus">A++</span></div>
+        <div class="q-text">Outline the steps of planning in health management in order.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>1. Preparation for planning</strong> — assign teams, clarify objectives, allocate time and resources</li>
+          <li><strong>2. Situational analysis</strong> — data collection → SWOT → problem statement</li>
+          <li><strong>3. Identify community needs and problems</strong> — prioritize using criteria (magnitude, seriousness, feasibility…)</li>
+          <li><strong>4. Planning</strong> — choose type of plan (strategic/tactical/operational/contingency)</li>
+          <li><strong>5. Formulation of Vision, Mission, Goals, Objectives</strong> — SMART/SMARTER</li>
+          <li><strong>6. Action plan</strong> — translate objectives into tasks</li>
+          <li><strong>7. Planning for monitoring and evaluation</strong> — organize, staff, direct, supervise, monitor</li>
+          <li><strong>8. Communication and reporting plan</strong> — internal and external stakeholders</li>
+          <li><strong>9. Re-planning and decision making</strong> — cyclical process, adjust deviations</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q16</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Planning (general definition + WHO definition).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>General:</strong> A systematic process of identifying desirable future goals, outlining appropriate courses of action, and determining the resources required to achieve them.</p>
+        <p><strong>WHO:</strong> "A process of organizing decisions and actions to achieve particular ends, set within a policy."</p>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q17</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the Communication and Reporting Plan step in health management planning.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Engage <strong>internal stakeholders</strong> (staff, health team)</li>
+          <li>Engage <strong>external stakeholders</strong> (community leaders, funders, government)</li>
+          <li>Report progress regularly: monthly, quarterly, annually</li>
+          <li>Ensures transparency and accountability throughout the plan</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q18</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: Re-planning and Decision Making in health management.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Planning is a <strong>cyclical</strong> process — not linear</li>
+          <li>Evaluate results against goals → identify deviations</li>
+          <li>Adjust plans and develop backup strategies if needed</li>
+          <li>Re-planning leads to continuous improvement of health programs</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH1 done"
+
+<!-- ══════════════ CH2 OCCUPATIONAL LUNG ══════════════ -->
+<div class="chapter" id="ch2">
+  <div class="chapter-header">2 — OCCUPATIONAL LUNG DISEASES</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate and classify the occupational lung diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Upper respiratory tract irritation:</strong> Irritant gases and solvents</li>
+          <li><strong>Airway disorders:</strong> Occupational asthma (diisocyanates, organic dusts), Byssinosis (cotton, hemp, flax, sisal)</li>
+          <li><strong>Acute inhalation injury:</strong> Toxic pneumonitis, metal fume fever, polymer fume fever, smoke inhalation</li>
+          <li><strong>Hypersensitivity pneumonitis:</strong> Bacteria, fungi, animal proteins</li>
+          <li><strong>Infectious disorders:</strong> Tuberculosis, pulmonary anthrax</li>
+          <li><strong>Pneumoconiosis:</strong> Asbestos, silica, coal, beryllium</li>
+          <li><strong>Malignancies:</strong> Sino-nasal cancer (wood dust), lung cancer (asbestos, radon), mesothelioma (asbestos)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the types of dust by source in the work environment.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Metallic dust (lead, cadmium, nickel, beryllium)</li>
+          <li>Mineral dust (silica, coal, cement)</li>
+          <li>Chemical dust (bulk chemicals, pesticides)</li>
+          <li>Organic/vegetable dust (flour, wood, cotton, tea)</li>
+          <li>Bioaerosols (moulds, spores)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the types of dust by particle size with size range and example for each.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Type</th><th>Size</th><th>Example</th></tr>
+          <tr><td>Inhalable dust</td><td>&gt;100 µm, enters mouth/nose</td><td>Pollen, cement</td></tr>
+          <tr><td>Thoracic dust</td><td>&gt;5 µm to 100 µm, reaches airways</td><td>Cotton</td></tr>
+          <tr><td>Respirable dust</td><td>≤5 µm, penetrates alveoli</td><td>Quartz, crystalline silica</td></tr>
+          <tr><td>Ultra-fine dust</td><td>&lt;100 nm, nanoparticles</td><td>Combustion products, lacquers</td></tr>
+          <tr><td>Fibers</td><td>&gt;5 µm length, &lt;3 µm diameter, ratio &gt;3:1</td><td>Asbestos, silica, cotton fibers</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between Simple (non-collagenous) and Collagenous Pneumoconiosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Simple (Non-collagenous)</th><th>Collagenous</th></tr>
+          <tr><td>Tissue reaction</td><td>Minimal reticular reaction</td><td>Marked fibrosis, permanent destruction of alveoli</td></tr>
+          <tr><td>Reversibility</td><td>Reversible, alveolar architecture intact</td><td>Irreversible destruction</td></tr>
+          <tr><td>Examples</td><td>Siderosis (iron), Stannosis (tin), Baritosis (barium)</td><td>Silicosis, Asbestosis, Coal Workers' Pneumoconiosis</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-det">Determine with examples</span></div>
+        <div class="q-text">Give 3 examples of simple pneumoconiosis and 3 examples of collagenous pneumoconiosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Simple:</strong> Siderosis (iron dust), Stannosis (tin dust), Baritosis (barium dust)</p>
+        <p><strong>Collagenous:</strong> Silicosis (silica), Asbestosis (asbestos fibers), Coal Workers' Pneumoconiosis (coal dust)</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Silicosis: definition, at-risk occupations, pathogenesis, types, and complications.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Progressive fibrotic lung disease due to inhalation of crystalline silica.</p>
+        <p><strong>At-risk:</strong> Mining, pottery, glass, foundries, sandblasting, stonecutting.</p>
+        <p><strong>Pathogenesis:</strong> Silica particles damage macrophages → release fibrogenic agents → pulmonary fibrosis.</p>
+        <h4>Types:</h4>
+        <table>
+          <tr><th>Type</th><th>Exposure</th><th>Duration</th></tr>
+          <tr><td>Chronic (commonest)</td><td>Low exposure</td><td>&gt;20 years</td></tr>
+          <tr><td>Accelerated</td><td>High exposure</td><td>5 years</td></tr>
+          <tr><td>Acute (fatal)</td><td>Very high exposure</td><td>Weeks–3 years</td></tr>
+        </table>
+        <p><strong>Complications:</strong> TB, respiratory failure, lung cancer, renal failure.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between the three types of silicosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Type</th><th>Exposure level</th><th>Duration to develop</th><th>Severity</th></tr>
+          <tr><td>Chronic</td><td>Low</td><td>&gt;20 years</td><td>Commonest, slowest</td></tr>
+          <tr><td>Accelerated</td><td>High</td><td>~5 years</td><td>Moderate</td></tr>
+          <tr><td>Acute</td><td>Very high</td><td>Weeks–3 years</td><td>Fatal</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Asbestosis: definition, uses, pathogenesis, and complications.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Chronic fibrotic lung disease from inhalation of asbestos fibers.</p>
+        <p><strong>Uses of asbestos:</strong> Insulation, construction, protective clothing, roofing, surfacing.</p>
+        <p><strong>Pathogenesis:</strong> Long fibers (&gt;30 µm) not completely engulfed by macrophage → release of lysosomal enzymes → fibroblast stimulation → collagen deposition and pulmonary fibrosis.</p>
+        <h4>Complications:</h4>
+        <ul>
+          <li>Lung cancer (lower zones; higher risk in smokers)</li>
+          <li>Respiratory failure (pulmonary hypertension, cor pulmonale)</li>
+          <li>Pleural plaques, Mesothelioma, Bronchogenic carcinoma, Laryngeal cancer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the asbestos-related diseases other than asbestosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Pleural plaques</li>
+          <li>Mesothelioma</li>
+          <li>Bronchogenic carcinoma (lung cancer)</li>
+          <li>Laryngeal cancer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Coal Workers' Pneumoconiosis (CWP): definition, at-risk occupations, pathophysiology, forms, and progression rate.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Lung disease from chronic inhalation of coal dust for over 20 years.</p>
+        <p><strong>At-risk:</strong> Coal miners, handlers, processors.</p>
+        <p><strong>Pathophysiology:</strong> Macrophages engulf coal dust → cytokine release → inflammation → coal macules.</p>
+        <h4>Forms:</h4>
+        <ul>
+          <li><strong>Simple:</strong> Individual coal macules</li>
+          <li><strong>Complicated:</strong> Coalescence → progressive massive fibrosis</li>
+        </ul>
+        <p><strong>Progression:</strong> 1–2% per year from simple to massive fibrosis.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the diagnostic methods of pneumoconiosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>History of occupational exposure</li>
+          <li>Clinical picture: dyspnea, cough, sputum (melanoptysis in CWP), chest restriction, crepitations, cyanosis, clubbing</li>
+          <li>Chest X-ray (ILO classification)</li>
+          <li>Pulmonary function tests (restrictive/obstructive/mixed)</li>
+          <li>CT scan</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: X-ray (ILO classification) findings in Silicosis, CWP, and Asbestosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Disease</th><th>X-ray Findings</th></tr>
+          <tr><td>Simple Silicosis</td><td>Small round opacities, "eggshell" calcification of hilar nodes</td></tr>
+          <tr><td>Complex Silicosis</td><td>Large opacities with massive collagenous fibrosis</td></tr>
+          <tr><td>CWP</td><td>Nodular opacities, reticular pattern</td></tr>
+          <tr><td>Asbestosis</td><td>Irregular opacities (lower zones), pleural plaques</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q13</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Byssinosis: definition, mechanisms, clinical picture (grading), and diagnosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Chronic respiratory disease in workers exposed to cotton, flax, hemp, jute, or sisal dust.</p>
+        <h4>Mechanisms:</h4>
+        <ul>
+          <li>Mechanical irritation of airway epithelium → reflex narrowing</li>
+          <li>Cotton contains histamine → bronchoconstriction; also liberates histamine from platelets</li>
+          <li>Release of bronchoconstrictor mediators (leukotrienes) from PMNs</li>
+          <li>Type III immune complex hypersensitivity</li>
+          <li>Chemotaxis of PMNs</li>
+          <li>Endotoxins from gram-negative bacteria in cotton cell walls</li>
+          <li>Fungal enzymes</li>
+        </ul>
+        <h4>Clinical picture (grading):</h4>
+        <table>
+          <tr><th>Grade</th><th>Symptoms</th></tr>
+          <tr><td>0</td><td>No symptoms</td></tr>
+          <tr><td>1/2</td><td>Occasional chest tightness on first day of working week</td></tr>
+          <tr><td>1</td><td>Chest tightness + breathlessness on first day</td></tr>
+          <tr><td>2</td><td>Chest tightness + breathlessness on first day AND other days</td></tr>
+          <tr><td>3</td><td>As grade 2 + permanent respiratory disability</td></tr>
+        </table>
+        <p><strong>Appears after:</strong> 20–25 years of exposure.</p>
+        <p><strong>Diagnosis:</strong> Exposure history, typical symptoms, pulmonary function tests.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q14</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the industries/dusts that cause Byssinosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul><li>Cotton</li><li>Hemp</li><li>Flax</li><li>Jute</li><li>Sisal</li></ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q15</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the strategies for prevention and control of occupational lung diseases (Hierarchy of Control).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Exposure-oriented (Hierarchy of Control):</h4>
+        <ul>
+          <li>Elimination of hazards</li>
+          <li>Risk reduction (substitution, isolation, engineering controls)</li>
+          <li>Administrative controls (work hours, regulations)</li>
+          <li>Personal protective equipment (masks, respirators)</li>
+        </ul>
+        <h4>Work-oriented:</h4>
+        <ul>
+          <li>Health promotion and smoking prohibition</li>
+          <li>Worker education about hazards</li>
+          <li>Disease surveillance (detect early disease)</li>
+          <li>Control measures (report symptoms, flu vaccination, TB screening in silicosis)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q16</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between Silicosis and Asbestosis regarding: at-risk occupations, pathogenesis mechanism, and complications.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Silicosis</th><th>Asbestosis</th></tr>
+          <tr><td>Dust</td><td>Crystalline silica</td><td>Asbestos fibers</td></tr>
+          <tr><td>At-risk</td><td>Mining, pottery, glass, sandblasting</td><td>Insulation, construction, roofing</td></tr>
+          <tr><td>Pathogenesis</td><td>Silica damages macrophages → fibrogenic agents</td><td>Long fibers not engulfed → lysosomal enzymes → fibroblast activation</td></tr>
+          <tr><td>X-ray</td><td>Round opacities, eggshell calcification</td><td>Irregular opacities (lower zones), pleural plaques</td></tr>
+          <tr><td>Special complication</td><td>TB, renal failure</td><td>Mesothelioma, laryngeal cancer</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH2 done"
+<!-- ══════════════ CH3 ENVIRONMENT ══════════════ -->
+<div class="chapter" id="ch3">
+  <div class="chapter-header">3 — ENVIRONMENTAL HEALTH (Extreme Temp. & Water)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the major heat-related illnesses.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul><li>Heatstroke</li><li>Heat Exhaustion</li><li>Heat Cramps</li><li>Skin Disorders (Miliaria, Intertrigo, Heat Urticaria)</li></ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between Heatstroke, Heat Exhaustion, and Heat Cramps regarding: definition, signs, and treatment.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Heatstroke</th><th>Heat Exhaustion</th><th>Heat Cramps</th></tr>
+          <tr><td>Definition</td><td>Core temp &gt;41°C, medical emergency</td><td>Prolonged exposure + inadequate salt/water</td><td>Sodium depletion (replacing sweat with water only)</td></tr>
+          <tr><td>Skin</td><td>Hot, dry — no sweating</td><td>Heavy sweating, moist skin</td><td>Moist, cool skin</td></tr>
+          <tr><td>Temperature</td><td>&gt;41°C</td><td>38–41°C</td><td>Normal or slightly raised</td></tr>
+          <tr><td>Mental status</td><td>Confusion → coma</td><td>Normal</td><td>Normal</td></tr>
+          <tr><td>Symptoms</td><td>Tachycardia, coma</td><td>Thirst, weakness, headache</td><td>Painful muscle spasms 1–3 min</td></tr>
+          <tr><td>Treatment</td><td>Immediate cooling (ice packs, fanning, water), move to shade, urgent medical care</td><td>Rest, cooling, oral/IV saline</td><td>Rest 1–3 days, oral saline (4 tsp salt/gallon water), salt supplementation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Heatstroke. What is the core temperature threshold?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>A <strong>medical emergency</strong> characterized by core temperature <strong>&gt;41°C</strong>, hot dry skin, confusion progressing to coma, absence of sweating, and tachycardia.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the skin disorders caused by heat with a brief description of each.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Miliaria (heat rash):</strong> Obstruction of sweat gland duct; severity increases with deeper obstruction (vesicles, erythema, desquamation, macules)</li>
+          <li><strong>Intertrigo:</strong> Excessive sweating in obese persons; occurs in skin folds (groin, axilla); presents as erythema in macerated skin</li>
+          <li><strong>Heat urticaria:</strong> Localized or generalized; appears as wheals surrounded by erythema (hives)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the preventive measures for heat-related disorders.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Loose, lightweight clothing</li>
+          <li>Sun protection (hat, sunglasses, sunscreen SPF ≥15)</li>
+          <li>Adequate fluid intake</li>
+          <li>Rest in cool areas; schedule activity in cooler times of day</li>
+          <li>Extra caution for high-risk individuals (medications, chronic illness)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Systemic Hypothermia: definition, stages (HT1–HT4), signs, and treatment.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Core temperature &lt;35°C; body loses heat faster than it can be replaced.</p>
+        <table>
+          <tr><th>Stage</th><th>Temp</th><th>Signs</th></tr>
+          <tr><td>HT1</td><td>32–35°C</td><td>Conscious, shivering</td></tr>
+          <tr><td>HT2</td><td>28–32°C</td><td>Impaired consciousness, no shivering</td></tr>
+          <tr><td>HT3</td><td>24–28°C</td><td>Unconscious</td></tr>
+          <tr><td>HT4</td><td>&lt;24°C</td><td>No signs of life</td></tr>
+        </table>
+        <h4>Treatment — Mild:</h4>
+        <ul>
+          <li>Move to warm area and stay active</li>
+          <li>Remove wet clothes, replace with dry clothes/blankets, cover the head</li>
+          <li>Drink warm (not hot) sugary drink to promote metabolism</li>
+          <li>Avoid caffeine</li>
+        </ul>
+        <h4>Treatment — Severe:</h4>
+        <ul>
+          <li>All of the above + contact emergency medical personnel</li>
+          <li>Hospital treatment required; cover all extremities</li>
+          <li>Place warm objects (hot packs/water bottles) on head, neck, chest, groin</li>
+          <li>Arms and legs warmed last</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between Immersion Foot (Trench Foot) and Frostbite.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Immersion Foot (Trench Foot)</th><th>Frostbite</th></tr>
+          <tr><td>Cause</td><td>Prolonged wet/cold exposure above freezing</td><td>Ice crystal formation in tissues (skin temp ≤ −3°C)</td></tr>
+          <tr><td>Signs</td><td>Cold, numb, swollen, waxy white → pain, redness, blistering</td><td>Irreversible tissue damage in fingers, toes, nose, ears</td></tr>
+          <tr><td>Treatment</td><td>Warm water soak, dry bandages, warm sugary drink</td><td>Rapid rewarming in 40–42°C water, elevation, avoid rubbing/exercise, treat infection, delayed surgery/amputation if necrosis</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the localized cold injuries.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul><li>Immersion Foot (Trench Foot)</li><li>Frostbite</li></ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the standards of potable water: physical, chemical, and bacteriological.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Physical:</strong> Odorless, colorless, clear, pleasant taste</li>
+          <li><strong>Chemical:</strong> Neutral/slightly alkaline pH, moderate hardness (≤20°); limits: Nitrate 1 ppm, Fluoride 1.5 ppm, Iron 0.3 ppm, Arsenic/Lead = nil</li>
+          <li><strong>Bacteriological:</strong> No coliforms or E. coli in 100 ml sample</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the methods of water purification (large-scale and small-scale).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Large-scale:</h4>
+        <ul>
+          <li>Filtration (sand on gravel layers — removes bacteria/cysts, NOT viruses; 95% removal)</li>
+          <li>Disinfection (to destroy remaining 5%)</li>
+          <li>Chlorination (dose: 0.6 ppm; residual: 0.2 ppm)</li>
+          <li>Super-chlorination in epidemics</li>
+        </ul>
+        <h4>Small-scale:</h4>
+        <ul>
+          <li>Boiling (kills all pathogens)</li>
+          <li>Domestic filtration (simplest)</li>
+          <li>Disinfection with bleaching powder (20–35% chlorine)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: Chlorination of water.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Dose: <strong>0.6 ppm</strong></li>
+          <li>Residual: <strong>0.2 ppm</strong></li>
+          <li>In epidemics: <strong>Super-chlorination</strong> is used</li>
+          <li>Necessary because filtration removes only 95% of pathogens (NOT viruses)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the agents of water pollution and their health effects.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Biological:</strong> Bacteria (cholera, dysentery), viruses (hepatitis, polio), parasites (giardia, schistosomiasis)</li>
+          <li><strong>Inorganic chemicals:</strong> Acids, salts, mercury, lead (e.g., Minamata disease)</li>
+          <li><strong>Oxygen-demanding wastes:</strong> Organic matter depleting oxygen → fish death</li>
+          <li><strong>Organic chemicals:</strong> Pesticides, oils</li>
+          <li><strong>Sediments:</strong> Cloud water, reduce photosynthesis</li>
+          <li><strong>Radioactive isotopes:</strong> Birth defects, cancer, genetic damage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q13</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the criteria of waterborne epidemics.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Sudden onset</li>
+          <li>Many cases in few days</li>
+          <li>Common water source</li>
+          <li>All ages and sexes affected</li>
+          <li>Multiple family cases</li>
+          <li>Any season</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q14</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the control measures of waterborne epidemics.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Identify and treat the contaminated source</li>
+          <li>Chlorinate water supply</li>
+          <li>Neutralize excess chlorine</li>
+          <li>Monitor for secondary cases</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q15</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss environmental mercury poisoning: sources and health risks.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Sources:</h4>
+        <ul>
+          <li>Fish consumption (methyl mercury bioaccumulation — higher in large predatory fish)</li>
+          <li>Broken thermometers, dental amalgams, jewelry</li>
+          <li>Gold mining, skin products, polluted air</li>
+        </ul>
+        <h4>Health Risks:</h4>
+        <ul>
+          <li>Neurological damage (tremors, memory loss, sensory disturbances)</li>
+          <li>Birth defects and developmental delays (Minamata disease)</li>
+          <li>Cancer and genetic damage</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CASES -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q16</span><span class="q-type type-case">Case</span></div>
+        <div class="case-box"><strong>Case 1:</strong> A 45-year-old construction worker collapses during outdoor work in August. He has hot dry skin, confusion, and absent sweating. Core temperature is 42°C.</div>
+        <div class="q-text">(a) Diagnosis? (b) Immediate management?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Diagnosis: Heatstroke</strong> — Core temp &gt;41°C + hot dry skin + confusion + absent sweating.</p>
+        <h4>(b) Management:</h4>
+        <ul>
+          <li>Move to shade/cool area immediately</li>
+          <li>Rapid cooling: water, ice packs, fanning</li>
+          <li>Urgent medical care / hospitalization</li>
+          <li>IV fluids as needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q17</span><span class="q-type type-case">Case</span></div>
+        <div class="case-box"><strong>Case 2:</strong> A soldier is rescued after hours in cold wet weather. Feet are cold, swollen, numb, and waxy white. Core temperature 36.5°C.</div>
+        <div class="q-text">(a) Diagnosis? (b) How does it differ from frostbite? (c) Treatment?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Immersion Foot (Trench Foot)</strong> — prolonged wet/cold exposure above freezing + localized findings + normal core temp.</p>
+        <p><strong>(b) Vs. Frostbite:</strong> Frostbite occurs when skin temp ≤ −3°C → actual ice crystal formation → irreversible tissue damage in extremities. Trench foot is above-freezing wet exposure, no ice crystals.</p>
+        <h4>(c) Treatment:</h4>
+        <ul>
+          <li>Warm water soak</li>
+          <li>Dry bandages</li>
+          <li>Warm sugary drink</li>
+          <li>Elevation and rest</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH3 done"
+<!-- ══════════════ CH4 HEALTH EDUCATION ══════════════ -->
+<div class="chapter" id="ch4">
+  <div class="chapter-header">4 — HEALTH EDUCATION</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Health Education.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Planned learning experiences that provide individuals, groups, and communities with information and skills to make health decisions, leading to changes in <strong>knowledge, attitudes, behavior, decision-making, and social change</strong>.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the goals of Health Education.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Health consciousness goal (increase awareness)</li>
+          <li>Knowledge goal (provide information)</li>
+          <li>Self-awareness goal (identify what is important for health)</li>
+          <li>Attitude change goal (modify beliefs)</li>
+          <li>Decision-making goal (support healthy choices)</li>
+          <li>Behavior change goal (encourage adoption of healthy practices)</li>
+          <li>Social change goal (make healthy choices easier for communities)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the dimensions of Health Education.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Concerned with the whole person (physical, mental, social)</li>
+          <li>Lifelong process</li>
+          <li>Directed to all health problem levels (primary, secondary, tertiary)</li>
+          <li>Directed to individuals, families, and communities</li>
+          <li>Helping people make health choices</li>
+          <li>Involves formal and informal teaching</li>
+          <li>Covers a wide range of goals</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-note">Short Note</span><span class="aplus">A++</span></div>
+        <div class="q-text">Short note on: Levels of Health Education (Primary, Secondary, Tertiary) with examples.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Level</th><th>Goal</th><th>Example</th></tr>
+          <tr><td>Primary</td><td>Prevent illness, improve quality of life</td><td>Child/adult health promotion, vaccination education</td></tr>
+          <tr><td>Secondary</td><td>Restore health after illness, correct faulty behaviors</td><td>Educate diabetics on diet control</td></tr>
+          <tr><td>Tertiary</td><td>Prevent complications, maximize remaining health (rehabilitation)</td><td>Rehab after stroke — physiotherapy education</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-out">Outline</span><span class="aplus">A++</span></div>
+        <div class="q-text">Outline the steps of planning a health education program (all components in order).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>1. Situation analysis:</strong> Collect information, assess needs, priorities, prevalence, resources, SWOT analysis</li>
+          <li><strong>2. Formulate objectives:</strong> Clear, measurable goals (increase knowledge, encourage exercise, reduce weight)</li>
+          <li><strong>3. Plan content and methods:</strong> Messages, lectures, posters, brochures, handouts, case scenarios</li>
+          <li><strong>4. Plan evaluation:</strong> Assess knowledge change, weight reduction, satisfaction, barriers, educator performance</li>
+          <li><strong>5. Implementation:</strong> Carry out planned activities; supervise and monitor</li>
+          <li><strong>6. Evaluation:</strong> Structure (place, methods, materials) → Process (suitability of lectures) → Outcome (knowledge, attitude, behavior change)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the steps of Situational Analysis in planning a health education program.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Identify the consumer (students, community, attitudes, knowledge, expectations)</li>
+          <li>Identify priorities and needs</li>
+          <li>Prioritize needs (prevention more effective than treatment)</li>
+          <li>SWOT/SWOC analysis (strengths, weaknesses, opportunities, challenges)</li>
+          <li>Review previous programs (successes and failures)</li>
+          <li>Assess available resources (funds, human resources, materials, timetable)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the Evaluation step of a health education program: structure, process, and outcome evaluation.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Structure evaluation:</strong> Quality and availability of the place, methods, message, and materials used</li>
+          <li><strong>Process evaluation:</strong> Suitability of lectures in achieving objectives</li>
+          <li><strong>Outcome evaluation:</strong> Change in level of knowledge; change in attitude; adoption of healthy behaviors with sustainability</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Primary, Secondary, and Tertiary levels of health education regarding goal and example.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Level</th><th>Goal</th><th>Example</th></tr>
+          <tr><td>Primary</td><td>Prevent illness before it occurs</td><td>Vaccination awareness, healthy diet campaigns</td></tr>
+          <tr><td>Secondary</td><td>Restore health / correct behavior after illness</td><td>Educating hypertensive patients on DASH diet</td></tr>
+          <tr><td>Tertiary</td><td>Prevent complications, rehabilitation</td><td>Educating post-stroke patients on physiotherapy</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ CH5 GENERAL PREVENTIVE MEASURES ══════════════ -->
+<div class="chapter" id="ch5">
+  <div class="chapter-header">5 — GENERAL PREVENTIVE MEASURES OF COMMUNICABLE DISEASES</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the levels of disease prevention.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Primordial prevention</li>
+          <li>Primary prevention</li>
+          <li>Secondary prevention</li>
+          <li>Tertiary prevention</li>
+          <li>Quaternary prevention</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Primordial Prevention. Give one example.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Actions to <strong>inhibit the emergence of risk factors</strong> themselves before they develop — targeting environmental, social, cultural, and behavioral conditions.</p>
+        <p><em>Example:</em> Regulating salt content in processed food to prevent hypertension risk factors from emerging in the population.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Primary Prevention in communicable diseases: definition, health promotion measures, and specific protection measures.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Definition:</strong> Actions taken before the occurrence of disease to prevent its development in healthy individuals.</p>
+        <h4>Health Promotion (general):</h4>
+        <ul>
+          <li>Balanced nutrition, physical exercise, recreation</li>
+          <li>Sanitary environment: clean air, safe water, food hygiene, vector control, rodent control, vaccination of stray animals</li>
+          <li>Health education and awareness</li>
+        </ul>
+        <h4>Specific Protection:</h4>
+        <ul>
+          <li><strong>Vaccination:</strong> Provides immunity + builds herd immunity</li>
+          <li><strong>Seroprophylaxis:</strong> Ready-made immunoglobulins/antitoxins for rapid short-term protection</li>
+          <li><strong>Chemoprophylaxis:</strong> Antimicrobials to prevent disease (e.g., penicillin for rheumatic fever, INH for TB, tetracyclines for cholera, ciprofloxacin for meningitis)</li>
+        </ul>
+        <h4>International Measures:</h4>
+        <ul>
+          <li>Quarantine for: cholera, TB, diphtheria, plague, smallpox, yellow fever, VHF, SARS, pandemic flu, measles, COVID-19</li>
+          <li>Animal quarantine from endemic areas</li>
+          <li>Disinfection certificates for imported goods</li>
+          <li>Deratting certificates for ships; disinfection of planes from endemic zones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Seroprophylaxis. How does it differ from Chemoprophylaxis?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Seroprophylaxis:</strong> Administration of ready-made immunoglobulins or antitoxins (animal or human origin) for rapid, short-term passive protection after exposure.</p>
+        <p><strong>Chemoprophylaxis:</strong> Use of antimicrobial drugs to prevent disease development in an exposed or high-risk individual.</p>
+        <table>
+          <tr><th></th><th>Seroprophylaxis</th><th>Chemoprophylaxis</th></tr>
+          <tr><td>Agent used</td><td>Immunoglobulins / antitoxins</td><td>Antimicrobial drugs</td></tr>
+          <tr><td>Immunity type</td><td>Passive</td><td>None (prevents multiplication)</td></tr>
+          <tr><td>Example</td><td>Rabies IG after bite</td><td>INH for TB contacts</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List 4 examples of diseases requiring quarantine as an international preventive measure.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul><li>Cholera</li><li>Plague</li><li>Yellow fever</li><li>SARS / COVID-19</li></ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Secondary Prevention measures in communicable diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Control of cases:</strong> Case finding, notification, isolation, concurrent and terminal disinfection, treatment, release</li>
+          <li><strong>Control of carriers:</strong> Pre-employment and periodic exams for food handlers, medical staff, childcare workers</li>
+          <li><strong>Control of contacts:</strong> Enlistment, examination, surveillance, segregation/isolation, immunization or chemoprophylaxis</li>
+          <li><strong>Control of animal reservoirs:</strong> Eradication, sanitary raising, veterinary care</li>
+          <li><strong>Community measures:</strong> Surveillance, eradication, elimination of disease</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the steps of control of contacts in secondary prevention.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Enlistment (identify all contacts)</li>
+          <li>Examination</li>
+          <li>Surveillance</li>
+          <li>Segregation or isolation</li>
+          <li>Immunization or chemoprophylaxis</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss Tertiary Prevention measures in communicable diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Reduce or eliminate long-term impairments and disabilities</li>
+          <li>Minimize suffering and optimize function</li>
+          <li>Prevent further deterioration</li>
+          <li>Help complicated cases cope with handicaps and live independently</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Quaternary Prevention.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Actions taken to <strong>protect patients from over-medicalization</strong> and ensure only ethically acceptable interventions are applied. Avoids unnecessary investigations, medications, and procedures.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Concurrent and Terminal disinfection.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Concurrent Disinfection</th><th>Terminal Disinfection</th></tr>
+          <tr><td>Timing</td><td>During the illness (while case is still present)</td><td>After recovery, death, or transfer of the case</td></tr>
+          <tr><td>Target</td><td>Ongoing discharges and contaminated materials</td><td>The room, bedding, clothing, and all items used by the patient</td></tr>
+          <tr><td>Goal</td><td>Prevent spread while disease is active</td><td>Ensure environment is free of pathogens</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH4+CH5 done"
+<!-- ══════════════ CH6 AIRBORNE ══════════════ -->
+<div class="chapter" id="ch6">
+  <div class="chapter-header">6 — AIRBORNE INFECTIONS (Viral & TB)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Measles.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Measles virus</td></tr>
+          <tr><td>Source</td><td>Man only</td></tr>
+          <tr><td>Transmission</td><td>Respiratory droplets (airborne for hours; surfaces infectious up to 2 hours)</td></tr>
+          <tr><td>Incubation</td><td>~10 days</td></tr>
+          <tr><td>Period of infectivity</td><td>Prodromal stage until 5 days after rash</td></tr>
+          <tr><td>Vaccine</td><td>MMR live attenuated (0.5 ml SC at 12 &amp; 18 months) → lifelong immunity</td></tr>
+          <tr><td>Post-exposure PEP</td><td>Vaccine within 3 days; IG within 6 days (seroprophylaxis or seroattenuation)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Rubella, highlighting special considerations for pregnant women.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Rubella virus</td></tr>
+          <tr><td>Source</td><td>Cases, incubatory carriers, congenitally infected infants (reservoir for 1 year)</td></tr>
+          <tr><td>Incubation</td><td>14–18 days</td></tr>
+          <tr><td>Communicability</td><td>1 week before to 7 days after rash</td></tr>
+          <tr><td>Vaccine</td><td>MMR live attenuated (0.5 ml SC at 12 &amp; 18 months); can be given to adolescent girls before pregnancy</td></tr>
+          <tr><td>PEP in pregnancy</td><td>Vaccine &amp; IG both ineffective post-exposure; seroprophylaxis for exposed pregnant women only to reduce severity</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Chickenpox (Varicella).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Varicella-zoster virus</td></tr>
+          <tr><td>Source</td><td>Cases only (respiratory &amp; vesicles)</td></tr>
+          <tr><td>Incubation</td><td>2–3 weeks</td></tr>
+          <tr><td>Communicability</td><td>2 days before to 6 days after rash</td></tr>
+          <tr><td>Vaccine</td><td>Varivax live attenuated (0.5 ml SC); 1st dose 12–15 months, 2nd dose 24–28 months; 95% immunity (CDC)</td></tr>
+          <tr><td>PEP</td><td>Vaccine within 3–5 days; IG within 4 days for immunocompromised</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Herpes Zoster: agent, source, vaccines (Zostavax vs Shingrix), and PEP.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Herpes zoster virus</td></tr>
+          <tr><td>Source</td><td>Cases with herpes zoster; rarely chickenpox cases</td></tr>
+          <tr><td>Incubation</td><td>2–3 weeks</td></tr>
+          <tr><td>Communicability</td><td>2 days before to 6 days after rash</td></tr>
+          <tr><td>Zostavax</td><td>Live attenuated, SC, single dose</td></tr>
+          <tr><td>Shingrix</td><td>Recombinant, IM, two doses 2–6 months apart</td></tr>
+          <tr><td>PEP</td><td>Zoster immune globulin within 72–96 hours</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Zostavax and Shingrix vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Zostavax</th><th>Shingrix</th></tr>
+          <tr><td>Type</td><td>Live attenuated</td><td>Recombinant subunit</td></tr>
+          <tr><td>Route</td><td>Subcutaneous (SC)</td><td>Intramuscular (IM)</td></tr>
+          <tr><td>Doses</td><td>Single dose</td><td>Two doses, 2–6 months apart</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the epidemiology of Smallpox and its eradication history.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Variola virus</td></tr>
+          <tr><td>Source</td><td>Cases only (respiratory &amp; rash)</td></tr>
+          <tr><td>Incubation</td><td>~2 weeks</td></tr>
+          <tr><td>Communicability</td><td>From rash onset until disappearance (~3 weeks)</td></tr>
+          <tr><td>Eradication</td><td>Declared eradicated in 1979</td></tr>
+          <tr><td>Historical vaccine</td><td>Calf lymph vaccine (scratching method)</td></tr>
+          <tr><td>Recent vaccines</td><td>ACAM2000, APSV</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Mumps.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Mumps virus</td></tr>
+          <tr><td>Source</td><td>Cases &amp; incubatory carriers (saliva, in utero)</td></tr>
+          <tr><td>Incubation</td><td>~18 days</td></tr>
+          <tr><td>Communicability</td><td>1 week before parotitis until swelling disappears</td></tr>
+          <tr><td>Vaccine</td><td>MMR (0.5 ml SC) or mumps vaccine alone → lifelong immunity</td></tr>
+          <tr><td>PEP</td><td>Booster dose of MMR within 5 days; seroprophylaxis is doubtful</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Avian Influenza (H5N1, H7N9).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>H5N1, H7N9</td></tr>
+          <tr><td>Source</td><td>Birds (feces, feathers, nasal discharge)</td></tr>
+          <tr><td>Incubation</td><td>7–14 days</td></tr>
+          <tr><td>Human-to-human</td><td>No transmission yet</td></tr>
+          <tr><td>Vaccine</td><td>No human vaccine; only for birds</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Swine Influenza (H1N1).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>H1N1</td></tr>
+          <tr><td>Source</td><td>Pigs</td></tr>
+          <tr><td>Incubation</td><td>2–14 days (internationally 7 days)</td></tr>
+          <tr><td>Communicability</td><td>Entire course of disease</td></tr>
+          <tr><td>Inactivated vaccine</td><td>H1N1 inactivated, 2 doses IM</td></tr>
+          <tr><td>Live vaccine</td><td>Live attenuated intranasal vaccine</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Avian Flu (H5N1) and Swine Flu (H1N1).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Avian Flu (H5N1)</th><th>Swine Flu (H1N1)</th></tr>
+          <tr><td>Agent</td><td>H5N1, H7N9</td><td>H1N1</td></tr>
+          <tr><td>Source</td><td>Birds</td><td>Pigs</td></tr>
+          <tr><td>Incubation</td><td>7–14 days</td><td>2–14 days</td></tr>
+          <tr><td>H2H transmission</td><td>None</td><td>Yes (entire course)</td></tr>
+          <tr><td>Vaccine</td><td>No human vaccine</td><td>Inactivated (IM) + live attenuated (intranasal)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Measles, Rubella, and Mumps vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Measles</th><th>Rubella</th><th>Mumps</th></tr>
+          <tr><td>Vaccine</td><td>MMR</td><td>MMR</td><td>MMR or alone</td></tr>
+          <tr><td>Type</td><td>Live attenuated</td><td>Live attenuated</td><td>Live attenuated</td></tr>
+          <tr><td>Route</td><td>SC 0.5 ml</td><td>SC 0.5 ml</td><td>SC 0.5 ml</td></tr>
+          <tr><td>Schedule</td><td>12 &amp; 18 months</td><td>12 &amp; 18 months</td><td>12 &amp; 18 months</td></tr>
+          <tr><td>Immunity</td><td>Lifelong</td><td>Lifelong</td><td>Lifelong</td></tr>
+        </table>
+        <p><em>Note: All three use the same combined MMR vaccine with the same schedule and route.</em></p>
+      </div>
+    </div>
+
+    <!-- TB -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the predisposing factors of Tuberculosis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Organism-related:</h4>
+        <ul><li>Virulence of bacilli</li><li>Number of bacilli inhaled</li></ul>
+        <h4>Host-related:</h4>
+        <ul>
+          <li>Age: &lt;5 years or &gt;15 years</li>
+          <li>Sex: M &gt; F</li>
+          <li>Race: Negroes more susceptible</li>
+          <li>Poor housing, overcrowding</li>
+          <li>Chronic illness: DM, renal, heart, liver, respiratory disease</li>
+          <li>Malnutrition</li>
+          <li>Immunodeficiency: HIV, anti-TNF therapy, cancer, steroids, IV drug abuse</li>
+          <li>Close exposure to an active TB case</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q13</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Tuberculosis: agent, source, incubation, period of infectivity, and clinical features.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Mycobacterium tuberculosis</td></tr>
+          <tr><td>Source</td><td>Open TB cases; infected animals</td></tr>
+          <tr><td>Incubation</td><td>2–8 weeks</td></tr>
+          <tr><td>Period of infectivity</td><td>Open cases: infective for years if untreated; NOT infective 2–3 weeks after proper treatment</td></tr>
+        </table>
+        <h4>Clinical Features:</h4>
+        <ul>
+          <li><strong>General:</strong> Unexplained weight loss, loss of appetite, night sweats, fever, fatigue, chills</li>
+          <li><strong>Pulmonary:</strong> Cough ≥3 weeks, hemoptysis, chest pain</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q14</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the Primary Prevention of Tuberculosis (general measures + BCG vaccine in full detail + chemoprophylaxis).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>General measures:</h4>
+        <ul>
+          <li>Sanitation, adequate housing, ventilation, proper nutrition</li>
+          <li>Health education</li>
+          <li>Cattle screening, pasteurization of milk, proper cooking of meat</li>
+        </ul>
+        <h4>BCG Vaccine:</h4>
+        <table>
+          <tr><th>Feature</th><th>Details</th></tr>
+          <tr><td>Type</td><td>Live attenuated bovine strain</td></tr>
+          <tr><td>Dose &amp; route</td><td>0.1 ml intradermal in left deltoid</td></tr>
+          <tr><td>Schedule</td><td>Single dose (at birth or early infancy)</td></tr>
+          <tr><td>Indications</td><td>Infants, tuberculin-negative contacts, high-risk groups</td></tr>
+          <tr><td>Contraindications</td><td>Tuberculin-positive, HIV, pregnancy</td></tr>
+          <tr><td>Protective value</td><td>80%, lasts 5–15 years</td></tr>
+          <tr><td>Complications</td><td>Abscess, fistula, necrosis, lymphadenitis</td></tr>
+        </table>
+        <h4>Chemoprophylaxis:</h4>
+        <p>INH (Isoniazid) orally for 1 year</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q15</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss Secondary Prevention of TB: control of cases and contacts.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Control of Cases:</h4>
+        <ul>
+          <li>Case finding (sputum smear, culture, radiography)</li>
+          <li>Reporting and treatment (DOT — Directly Observed Therapy + incentives)</li>
+          <li>Isolation + disinfection</li>
+          <li>Follow-up for 5 years</li>
+        </ul>
+        <h4>Control of Contacts:</h4>
+        <ul>
+          <li>Enlistment of all contacts</li>
+          <li>Health education</li>
+          <li>Tuberculin test:
+            <ul>
+              <li>Negative → BCG vaccine</li>
+              <li>Positive → Chest X-ray</li>
+            </ul>
+          </li>
+          <li>Chemoprophylaxis:
+            <ul>
+              <li><strong>Primary:</strong> INH for tuberculin-negative susceptibles</li>
+              <li><strong>Secondary:</strong> INH for tuberculin-positive with normal chest film</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q16</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: DOT (Directly Observed Therapy) in TB secondary prevention.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>A health worker directly watches the patient swallow every dose of anti-TB medication</li>
+          <li>Ensures adherence and prevents drug resistance</li>
+          <li>Often combined with incentives to improve compliance</li>
+          <li>Part of secondary prevention — control of TB cases</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TB CASE -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q17</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>TB Case:</strong> 28-year-old male, cough 4 weeks, hemoptysis, night sweats, 6 kg weight loss. Lives in crowded household. Father had TB 3 years ago. AFB smear positive.</div>
+        <div class="q-text">(a) Disease + justification. (b) Period of infectivity + when it ends. (c) Preventive measures for case and contacts.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Pulmonary Tuberculosis</strong> — justified by: cough ≥3 weeks, hemoptysis, night sweats, weight loss, household contact with TB case, positive AFB smear.</p>
+        <p><strong>(b) Period of infectivity:</strong> Open cases are infective for years if untreated. Ends <strong>2–3 weeks after starting proper anti-TB treatment</strong> (DOT).</p>
+        <h4>(c) Prevention:</h4>
+        <p><strong>Primary (for contacts):</strong></p>
+        <ul>
+          <li>Tuberculin test for all household contacts</li>
+          <li>Negative → BCG vaccination</li>
+          <li>Positive → Chest X-ray; if normal → INH chemoprophylaxis (secondary chemo)</li>
+          <li>Health education: ventilation, nutrition, avoid close contact with active case</li>
+        </ul>
+        <p><strong>Secondary (for case):</strong></p>
+        <ul>
+          <li>Notification + isolation until non-infectious</li>
+          <li>DOT-based treatment + incentives</li>
+          <li>Concurrent and terminal disinfection</li>
+          <li>Follow-up for 5 years</li>
+        </ul>
+        <p><strong>Tertiary:</strong> Rehabilitation of cured case — suitable employment, social support.</p>
+      </div>
+    </div>
+
+    <!-- TB INDICATORS -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q18</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the indicators used in a Tuberculosis survey/epidemiological study.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Tuberculin Index:</strong> % of population with positive tuberculin test (measures cumulative infection exposure)</li>
+          <li><strong>Case Notification Rate:</strong> Number of newly notified TB cases per 100,000 population per year</li>
+          <li><strong>Case Detection Rate:</strong> % of estimated cases that are actually detected and notified</li>
+          <li><strong>Treatment Success Rate:</strong> % of TB cases that complete treatment successfully</li>
+          <li><strong>BCG Coverage:</strong> % of target population vaccinated with BCG</li>
+          <li><strong>Smear Conversion Rate:</strong> % of initially smear-positive cases becoming smear-negative after 2 months of treatment</li>
+          <li><strong>Mortality Rate:</strong> TB-related deaths per 100,000 population</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH6 done"
+<!-- ══════════════ CH7 FOODBORNE ══════════════ -->
+<div class="chapter" id="ch7">
+  <div class="chapter-header">7 — FOODBORNE INFECTIONS (Polio, Rota, Cholera)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Poliomyelitis: agent, reservoir, transmission, incubation, susceptibility, and remaining endemic countries.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Poliovirus — Type I (most frequent), Type II (eradicated 1999), Type III (last case 2012)</td></tr>
+          <tr><td>Reservoir</td><td>Man (cases &amp; carriers)</td></tr>
+          <tr><td>Transmission</td><td>Fecal-oral (main), oral-oral, contaminated food/water</td></tr>
+          <tr><td>Incubation</td><td>7–10 days (range 4–35 days)</td></tr>
+          <tr><td>Period of infectivity</td><td>Carriers ~2 weeks; cases 6–8 weeks</td></tr>
+          <tr><td>Susceptibility</td><td>Mainly children &lt;5 years</td></tr>
+          <tr><td>Endemic countries</td><td>Afghanistan and Pakistan</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-comp">Compare</span><span class="aplus">A++</span></div>
+        <div class="q-text">Compare between OPV (Sabin) and IPV (Salk) vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>OPV (Sabin)</th><th>IPV (Salk)</th></tr>
+          <tr><td>Type</td><td>Live attenuated trivalent</td><td>Inactivated (killed) trivalent</td></tr>
+          <tr><td>Route</td><td>Oral</td><td>IM injection (1 ml)</td></tr>
+          <tr><td>Schedule</td><td>Zero dose at birth; 2, 4, 6 months; boosters at 9, 12, 18 months &amp; school age</td><td>2, 4, 6 months</td></tr>
+          <tr><td>Immunity</td><td>Humoral + cellular (intestinal)</td><td>Humoral only</td></tr>
+          <tr><td>Cold chain</td><td>Essential</td><td>Less critical</td></tr>
+          <tr><td>Complication</td><td>Rare vaccine-associated paralysis</td><td>None</td></tr>
+          <tr><td>Efficacy</td><td>High community immunity</td><td>Prevents &gt;90% of paralytic cases</td></tr>
+          <tr><td>Contraindications</td><td>Pregnancy, steroids, immunodeficiency</td><td>None specific</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the contraindications of OPV (Sabin) vaccine.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Pregnancy</li>
+          <li>Corticosteroid therapy</li>
+          <li>Immunodeficiency (HIV, cancer, immunosuppressive drugs)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the control measures of Poliomyelitis: cases, contacts, and epidemic measures.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Cases:</strong> Case finding, notification, isolation, disinfection, treatment, rehabilitation, release</li>
+          <li><strong>Contacts:</strong> Enlistment, supervision, booster dose or seroprophylaxis</li>
+          <li><strong>Epidemic measures:</strong> A single case of polio = public health emergency</li>
+          <li><strong>Campaigns:</strong> Periodic vaccination campaigns for children &lt;5 years to ensure coverage &gt;95%</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Rotavirus.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Importance</td><td>Leading cause of severe dehydrating diarrhea &amp; vomiting in children &lt;5 years worldwide</td></tr>
+          <tr><td>Transmission</td><td>Fecal-oral, contaminated food, person-to-person, fomites</td></tr>
+          <tr><td>Communicability</td><td>2 days before diarrhea onset, several days after symptoms</td></tr>
+          <tr><td>Incubation</td><td>~2 days</td></tr>
+          <tr><td>General prevention</td><td>Good hygiene, safe food and water</td></tr>
+          <tr><td>RotaTeq®</td><td>3 oral doses at 2, 4, 6 months</td></tr>
+          <tr><td>Rotarix®</td><td>2 oral doses at 2, 4 months</td></tr>
+          <tr><td>Egypt status</td><td>Optional (not mandatory)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between RotaTeq® and Rotarix® vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>RotaTeq®</th><th>Rotarix®</th></tr>
+          <tr><td>Number of doses</td><td>3 doses</td><td>2 doses</td></tr>
+          <tr><td>Schedule</td><td>2, 4, 6 months</td><td>2, 4 months</td></tr>
+          <tr><td>Route</td><td>Oral</td><td>Oral</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Cholera: agent, reservoir, portal of exit, transmission, incubation, susceptibility, and immunity.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Vibrio cholerae (produces potent enterotoxins)</td></tr>
+          <tr><td>Reservoir</td><td>Man only — cases (inapparent, subclinical, clinical) + carriers (incubatory, contact, convalescent)</td></tr>
+          <tr><td>Portal of exit</td><td>Stool &amp; vomitus of cases; stool of carriers</td></tr>
+          <tr><td>Transmission</td><td>Ingestion of contaminated water or food</td></tr>
+          <tr><td>Incubation</td><td>Few hours to 5 days (internationally 5 days)</td></tr>
+          <tr><td>Susceptibility</td><td>All ages, both sexes; higher in summer &amp; autumn</td></tr>
+          <tr><td>Communicability</td><td>As long as stools positive; carrier state may persist months; chemotherapy shortens period</td></tr>
+          <tr><td>Immunity</td><td>Type-specific after infection (clinical or subclinical)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the types of cholera carriers.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Incubatory carrier</li>
+          <li>Contact carrier</li>
+          <li>Convalescent carrier</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the specific prevention of Cholera: vaccines and chemoprophylaxis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Vaccine</th><th>Details</th></tr>
+          <tr><td>Koll's (killed)</td><td>2 doses; NOT recommended by WHO</td></tr>
+          <tr><td>Dukoral®</td><td>Oral; ≥2 years; 2 doses (3 doses for children 2–5 years); protection 2 years; mainly for travellers</td></tr>
+          <tr><td>Shanchol™ / Euvichol-Plus®</td><td>Oral; ≥1 year; 2 doses; protection ≥3 years; used in mass campaigns</td></tr>
+        </table>
+        <h4>Chemoprophylaxis:</h4>
+        <ul>
+          <li>Tetracycline: 500 mg/6h × 3 days OR single 1 g dose (half dose for children)</li>
+          <li>Doxycycline: 300 mg daily × 3 days (half dose for children)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the control of Cholera: management of cases and contacts + international measures.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Cases:</h4>
+        <ul>
+          <li>Rehydration: ORS for mild; IV fluids for severe</li>
+          <li>Zinc supplementation in children &lt;5 years</li>
+          <li>Chemotherapy (antibiotics shorten communicability)</li>
+          <li>Treat hypoglycemia</li>
+          <li>Release after 3 successive negative stool samples</li>
+        </ul>
+        <h4>Contacts:</h4>
+        <ul>
+          <li>Enlistment (age, sex, occupation, residence)</li>
+          <li>Isolation for 5 days from last exposure</li>
+          <li>3 negative stool samples before release</li>
+          <li>Chemoprophylaxis</li>
+          <li>Education, case finding, repeated stool cultures</li>
+        </ul>
+        <h4>International:</h4>
+        <ul>
+          <li>Notification to WHO</li>
+          <li>Chemoprophylaxis for travellers from endemic areas</li>
+          <li>Vaccination certificate NOT required internationally</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Cholera Case -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>Cholera Case:</strong> Summer — several family members with sudden profuse watery diarrhea after community gathering. Youngest child (3 years) severely dehydrated, altered consciousness.</div>
+        <div class="q-text">(a) Likely disease? (b) Waterborne/foodborne epidemic criteria? (c) Manage the severe case? (d) Control: cases, contacts, chemoprophylaxis, isolation, release.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Cholera</strong> — acute diarrheal infection caused by Vibrio cholerae; suggested by profuse watery diarrhea, common source exposure, multiple cases in short time.</p>
+        <h4>(b) Waterborne/Foodborne Epidemic Criteria:</h4>
+        <ul>
+          <li>Sudden onset</li>
+          <li>Many cases in few days</li>
+          <li>Common source (same gathering/water)</li>
+          <li>All ages and sexes affected</li>
+          <li>Multiple family cases</li>
+          <li>Any season</li>
+        </ul>
+        <h4>(c) Management of severe case (child):</h4>
+        <ul>
+          <li>IV rehydration (Ringer's lactate)</li>
+          <li>Zinc supplementation</li>
+          <li>Chemotherapy (antibiotics)</li>
+          <li>Treat hypoglycemia</li>
+          <li>Release after 3 successive negative stool samples</li>
+        </ul>
+        <h4>(d) Control:</h4>
+        <ul>
+          <li><strong>Cases:</strong> Notification, isolation, rehydration, antibiotics, 3 negative stool samples before release</li>
+          <li><strong>Contacts:</strong> Enlist, isolate 5 days, chemoprophylaxis (tetracycline or doxycycline), 3 negative stool samples</li>
+          <li>General: health education, safe water, food hygiene, sewage disposal</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Polio Case -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>Polio Case:</strong> 2.5-year-old unvaccinated child — fever then acute flaccid paralysis of left lower limb. Attends daycare with 30 other children.</div>
+        <div class="q-text">(a) Diagnosis + most common type? (b) Public health emergency? (c) Vaccine for contacts? (d) Control measures.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Poliomyelitis</strong> — Type I is most common (Type II eradicated, Type III last case 2012).</p>
+        <p><strong>(b)</strong> A single case of poliomyelitis = <strong>public health emergency</strong> requiring immediate response.</p>
+        <p><strong>(c) Contacts:</strong> Booster OPV dose; if unvaccinated → full vaccination schedule.</p>
+        <h4>(d) Control:</h4>
+        <ul>
+          <li><strong>Case:</strong> Notification, isolation, disinfection, rehabilitation (physiotherapy), release</li>
+          <li><strong>Contacts (daycare):</strong> Enlistment, supervision, vaccination campaign for all children &lt;5 years in the area</li>
+          <li>Surveillance for acute flaccid paralysis</li>
+          <li>Ensure vaccination coverage &gt;95%</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH7 done"
+<!-- ══════════════ CH8 CONTACT ══════════════ -->
+<div class="chapter" id="ch8">
+  <div class="chapter-header">8 — CONTACT INFECTIONS (Rabies & Tetanus)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Rabies: reservoir (urban vs wildlife), source, transmission, and incubation period.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Urban reservoir</td><td>Dogs, cats (most common worldwide)</td></tr>
+          <tr><td>Wildlife reservoir</td><td>Bats, raccoons, skunks, foxes</td></tr>
+          <tr><td>Source</td><td>Saliva of rabid animals (present 3–4 days before symptoms)</td></tr>
+          <tr><td>Transmission</td><td>Animal bites, licks on injured skin/mucosa, aerosol</td></tr>
+          <tr><td>Incubation</td><td>20–90 days (range: few days to &gt;1 year)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss post-exposure prophylaxis (PEP) for Rabies in full detail (all scenarios + immunoglobulin).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Wound care (always first):</h4>
+        <p>Immediate washing with soap &amp; water; avoid suturing; tetanus prophylaxis; antibiotics.</p>
+        <h4>PEP Scenarios:</h4>
+        <table>
+          <tr><th>Scenario</th><th>Protocol</th></tr>
+          <tr><td>Not immunized before — stray animal</td><td>4 doses IM in deltoid: days 0, 3, 7, 14. Immunocompromised: add 5th dose at day 28</td></tr>
+          <tr><td>Not immunized — domestic animal (accessible)</td><td>Give 1st dose; observe animal 10 days. If animal shows no change → stop doses</td></tr>
+          <tr><td>Previously immunized — bite within 3 months</td><td>No action needed</td></tr>
+          <tr><td>Previously immunized — bite after 3 months</td><td>2 booster doses at days 0 and 3</td></tr>
+          <tr><td>Incomplete series (1–2 doses) + new bite</td><td>Complete the original vaccine series</td></tr>
+          <tr><td>Had 3 doses + new bite within 3 months</td><td>Complete the series</td></tr>
+          <tr><td>Had 3 doses + new bite after 3 months</td><td>2 booster doses at days 0 and 3</td></tr>
+        </table>
+        <h4>Immunoglobulin:</h4>
+        <ul>
+          <li>Human RIG: 20 IU/kg</li>
+          <li>Equine RIG: 40 IU/kg</li>
+          <li>Infiltrate maximum volume at bite site; give remainder IM at different site</li>
+          <li>Give within 24 hours to 7 days of first vaccine dose</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the primary prevention measures for Rabies (animal-related and human-related).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Animal-related:</h4>
+        <ul>
+          <li>Control stray animals</li>
+          <li>Vaccination of animals every 2 years</li>
+          <li>Licensing, spay/neuter programs</li>
+          <li>Quarantine of imported animals</li>
+        </ul>
+        <h4>Human-related (pre-exposure):</h4>
+        <ul>
+          <li>Pre-exposure prophylaxis: 2 doses on days 0 and 7</li>
+          <li>Target: zoo workers, veterinarians, laboratory workers, wildlife handlers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the high-risk groups requiring Rabies pre-exposure prophylaxis.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Zoo workers</li>
+          <li>Veterinarians</li>
+          <li>Laboratory workers handling rabies virus</li>
+          <li>Wildlife handlers</li>
+          <li>Cave explorers (bat exposure)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Tetanus: agent, reservoir, transmission routes, and incubation.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Clostridium tetani (vegetative + resistant sporulated forms)</td></tr>
+          <tr><td>Reservoir</td><td>Herbivorous animals (horses, cattle, sheep, dogs, guinea pigs); occasionally man</td></tr>
+          <tr><td>H2H transmission</td><td>None (no man-to-man transmission)</td></tr>
+          <tr><td>Wound tetanus</td><td>Contaminated wounds (soil, dust, feces)</td></tr>
+          <tr><td>Neonatal tetanus</td><td>Contaminated umbilical cord stump</td></tr>
+          <tr><td>Surgical tetanus</td><td>Unclean instruments/environment</td></tr>
+          <tr><td>Puerperal tetanus</td><td>Infection during labor/abortion with unsterilized instruments</td></tr>
+          <tr><td>Incubation</td><td>6–8 days (range 2 days–3 weeks)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the types of tetanus based on mode of acquisition.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Wound tetanus (most common)</li>
+          <li>Neonatal tetanus</li>
+          <li>Surgical tetanus</li>
+          <li>Puerperal tetanus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss Tetanus vaccines: types, schedule by age group, and special populations.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Population</th><th>Vaccine</th><th>Schedule</th></tr>
+          <tr><td>Babies &amp; children</td><td>DTaP or DT</td><td>2, 4, 6, 18 months; booster at 4–6 years</td></tr>
+          <tr><td>Preteens</td><td>Tdap</td><td>Single dose at 11–12 years</td></tr>
+          <tr><td>Pregnant women</td><td>Tdap</td><td>Single dose during weeks 27–36</td></tr>
+        </table>
+        <p><em>Vaccine types: DT (diphtheria-tetanus), DTaP (+ acellular pertussis), Td (adult booster), Tdap (adult + pertussis)</em></p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss the management of an injured person regarding Tetanus PEP (wound care, TIG, vaccine booster).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>1. Prevent further toxin production:</h4>
+        <ul>
+          <li>Cleaning and debridement (remove foreign matter + necrotic tissue)</li>
+          <li>Apply local antiseptic</li>
+          <li>Suturing and dressing</li>
+          <li>Chemoprophylaxis: penicillin or tetracycline + metronidazole</li>
+        </ul>
+        <h4>2. Immunization (PEP):</h4>
+        <ul>
+          <li><strong>TIG (Tetanus Immune Globulin):</strong> Given as soon as possible after injury; neutralizes released toxin</li>
+          <li><strong>Vaccine booster:</strong>
+            <ul>
+              <li>Clean, minor wounds: booster if ≥10 years since last dose</li>
+              <li>All other wounds: booster if ≥5 years since last dose</li>
+            </ul>
+          </li>
+        </ul>
+        <h4>TIG doses:</h4>
+        <ul>
+          <li>Human TIG: 3,000–6,000 IU</li>
+          <li>Equine antitoxin: 30,000 IU</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the specific prevention measures for Neonatal Tetanus.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Aseptic cord care</li>
+          <li>Trained birth attendants</li>
+          <li>Maternal immunization with Tdap during pregnancy (weeks 27–36)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Human TIG and Equine antitoxin regarding dose.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Human TIG</th><th>Equine Antitoxin</th></tr>
+          <tr><td>Dose</td><td>3,000–6,000 IU</td><td>30,000 IU</td></tr>
+          <tr><td>Risk of reaction</td><td>Lower (human-derived)</td><td>Higher (animal-derived)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Rabies Case -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>Rabies Case:</strong> 10-year-old boy bitten on hand by stray dog. Dog ran away. Child has NO prior rabies vaccination.</div>
+        <div class="q-text">(a) Reservoir and source? (b) Full PEP protocol (vaccine + RIG)? (c) What changes if animal is domestic and accessible?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Reservoir:</strong> Urban rabies — dogs and cats. <strong>Source:</strong> Saliva of rabid dog (present 3–4 days before symptoms).</p>
+        <h4>(b) Full PEP — unimmunized, stray animal:</h4>
+        <ul>
+          <li>Immediate wound care: wash with soap &amp; water, antiseptic, tetanus prophylaxis, antibiotics</li>
+          <li>Rabies vaccine: 4 doses IM in deltoid — days 0, 3, 7, 14</li>
+          <li>Human RIG 20 IU/kg (or equine 40 IU/kg): infiltrate at bite site; remainder IM</li>
+          <li>Give RIG within 24h–7 days alongside first vaccine dose</li>
+        </ul>
+        <h4>(c) If domestic accessible animal:</h4>
+        <ul>
+          <li>Give first vaccine dose</li>
+          <li>Observe animal for 10 days</li>
+          <li>If no change in behavior after 10 days → stop remaining doses</li>
+          <li>If animal shows signs of rabies → complete full 4-dose course + RIG</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tetanus Case -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>Tetanus Case:</strong> 35-year-old farmer steps on nail in field. Last tetanus booster 7 years ago. Wound is deep, contaminated with soil.</div>
+        <div class="q-text">(a) Type of tetanus + mechanism? (b) Wound management? (c) TIG needed? Vaccine booster needed? Justify.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Wound tetanus</strong> — Clostridium tetani spores in soil contaminate wound → germinate in anaerobic environment → produce tetanospasmin toxin → blocks inhibitory neurotransmitters → spastic paralysis.</p>
+        <h4>(b) Wound management:</h4>
+        <ul>
+          <li>Thorough cleaning and debridement (remove foreign material + necrotic tissue)</li>
+          <li>Apply antiseptic solution</li>
+          <li>Suturing and dressing</li>
+          <li>Chemoprophylaxis: penicillin or tetracycline + metronidazole</li>
+        </ul>
+        <h4>(c) TIG and booster decision:</h4>
+        <ul>
+          <li><strong>TIG:</strong> YES — this is a high-risk wound (deep, contaminated with soil)</li>
+          <li><strong>Booster:</strong> YES — last dose was 7 years ago; for all other wounds (non-clean, non-minor) a booster is recommended if ≥5 years since last dose. 7 years &gt; 5 years → booster indicated.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH8 done"
+<!-- ══════════════ CH9 MALARIA ══════════════ -->
+<div class="chapter" id="ch9">
+  <div class="chapter-header">9 — ARTHROPOD-BORNE INFECTIONS — MALARIA</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology of Malaria: causative organisms, reservoir, infective stages, transmission, incubation, and period of communicability.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Causative organisms</td><td>P. falciparum (most serious), P. vivax, P. malariae, P. ovale (milder), P. knowlesi (zoonotic)</td></tr>
+          <tr><td>Reservoir</td><td>Humans (cases may harbor multiple species)</td></tr>
+          <tr><td>Infective stage to mosquito</td><td>Mature gametocytes (in human blood)</td></tr>
+          <tr><td>Definitive host</td><td>Female Anopheles mosquito</td></tr>
+          <tr><td>Infective stage to man</td><td>Sporozoite (in mosquito salivary glands)</td></tr>
+          <tr><td>Transmission</td><td>Bite of infective female Anopheles; also via blood transfusion, contaminated needles, rarely congenital</td></tr>
+          <tr><td>Incubation</td><td>9–40 days (species-dependent); transfusion malaria: up to 2 months</td></tr>
+          <tr><td>Period of communicability</td><td>As long as gametocytes present (up to 3 years untreated; shortened with drugs). Stored blood infective ~1 month</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Plasmodium species regarding severity.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Species</th><th>Severity</th><th>Notes</th></tr>
+          <tr><td>P. falciparum</td><td>Most serious — can be fatal</td><td>Causes cerebral malaria</td></tr>
+          <tr><td>P. vivax</td><td>Milder — generally not fatal</td><td>Can cause relapses</td></tr>
+          <tr><td>P. malariae</td><td>Milder — generally not fatal</td><td>Longest incubation</td></tr>
+          <tr><td>P. ovale</td><td>Milder — generally not fatal</td><td>Rare</td></tr>
+          <tr><td>P. knowlesi</td><td>Zoonotic (from macaques)</td><td>Can infect humans</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the phases of Malaria Survey (diagnosis at community level).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Phase I:</strong> Preparatory (mapping, population study, sampling)</li>
+          <li><strong>Phase II:</strong> Vector study (adult species, breeding sites, larval stages, infection rates)</li>
+          <li><strong>Phase III:</strong> Human infection study (clinical + lab)</li>
+          <li><strong>Phase IV:</strong> Data analysis — calculate indices</li>
+          <li><strong>Phase V:</strong> Report writing (endemicity level, vector characteristics, drug sensitivity, recommendations)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the indicators (indices) of Malaria Survey — Human Indices and Vector Indices — with definition and significance of each.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Human Indices:</h4>
+        <table>
+          <tr><th>Index</th><th>Definition</th><th>Significance</th></tr>
+          <tr><td>Splenic Index</td><td>% of children aged 2–6 years with splenomegaly (excluding other causes)</td><td>Non-specific indicator of malaria endemicity</td></tr>
+          <tr><td>Parasite Index</td><td>% of infants below 1 year with malaria parasites in blood</td><td>Specific — most sensitive index of <strong>recent infection</strong></td></tr>
+          <tr><td>Gametocytic Index</td><td>% of individuals having gametocytes in their blood</td><td>Measures infectivity of humans to mosquitoes</td></tr>
+        </table>
+        <h4>Vector Indices:</h4>
+        <table>
+          <tr><th>Index</th><th>Definition</th><th>Significance</th></tr>
+          <tr><td>Oocytic Index</td><td>% of female Anopheles with oocysts in stomach wall</td><td>Indicates infection in mosquitoes</td></tr>
+          <tr><td>Sporozoite Index</td><td>% of female Anopheles with sporozoites in salivary glands</td><td>Most sensitive vector index — indicates <strong>immediate infectivity to man</strong></td></tr>
+        </table>
+        <h4>Interpretation of Sporozoite Index:</h4>
+        <ul>
+          <li>&lt;10% → Low endemicity</li>
+          <li>10–25% → Intermediate endemicity</li>
+          <li>25–50% → High endemicity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-det">Determine with examples</span></div>
+        <div class="q-text">Determine the most sensitive index for: (a) recent human infection, (b) immediate infectivity of mosquitoes to man. Justify.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Most sensitive for recent human infection → Parasite Index</strong><br>Because it measures infants &lt;1 year old — those with the shortest exposure history — so any positive result reflects a recent infection in the community.</p>
+        <p><strong>(b) Most sensitive for immediate infectivity of mosquitoes → Sporozoite Index</strong><br>Sporozoites in salivary glands = infective stage ready to be injected into humans on the next bite. Their presence directly indicates that the mosquito can transmit disease right now.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Splenic Index. What is its limitation compared to the Parasite Index?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Splenic Index:</strong> The percentage of children aged 2–6 years showing splenomegaly, excluding other causes of splenomegaly.</p>
+        <p><strong>Limitation:</strong> It is <strong>non-specific</strong> — splenomegaly can be caused by other diseases (leishmaniasis, schistosomiasis, portal hypertension). The Parasite Index is <strong>specific</strong> because it directly detects malaria parasites in the blood.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the general preventive measures against Malaria.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Environmental sanitation + vector control:</h4>
+        <ul>
+          <li>Eliminate breeding sites (fill swamps, drain stagnant water)</li>
+          <li>Destroy larvae (oil, larvicides)</li>
+          <li>Kill adults (insecticides)</li>
+        </ul>
+        <h4>Human protection:</h4>
+        <ul>
+          <li>Screening windows and doors</li>
+          <li>Insecticide-treated bed nets</li>
+          <li>Repellents and protective clothing</li>
+          <li>Avoid outdoor exposure at dusk/dawn</li>
+          <li>Avoid transfusion from suspected malaria cases</li>
+          <li>Health education for public and travelers</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span></div>
+        <div class="q-text">Discuss Malaria chemoprophylaxis: indications, drug of choice, dose, and duration.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Indications:</strong> Travelers to endemic areas (CDC recommends for travelers to Aswan)</li>
+          <li><strong>Drug:</strong> Chloroquine or Hydroxychloroquine — 5 mg/kg/week (chloroquine phosphate 500 mg for average adult)</li>
+          <li><strong>Duration:</strong> Must be continued for <strong>4–6 weeks after leaving</strong> endemic area</li>
+          <li><strong>Resistant areas (P. falciparum):</strong> Mefloquine 5 mg/kg/week — start 1–2 weeks before travel, during stay, and 4 weeks after leaving</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: Malaria vaccines (RTS,S/AS01 and Whole Sporozoite Vaccines).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>RTS,S/AS01 (Mosquirix):</strong> WHO-recommended for children in sub-Saharan Africa and other regions with moderate-to-high P. falciparum transmission</li>
+          <li><strong>Whole Sporozoite Vaccines:</strong> Contain whole sporozoites (sexual form extracted from mosquito); experimental but promising</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Malaria Case -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-case">Case on CD</span></div>
+        <div class="case-box"><strong>Malaria Case:</strong> Rural village near Aswan. 200 children 2–6 years examined — 40 have splenomegaly. Blood films of 100 infants &lt;1 year — 12 positive. 100 female Anopheles dissected — 8 have sporozoites in salivary glands.</div>
+        <div class="q-text">(a) Calculate Splenic Index, Parasite Index, Sporozoite Index. (b) Endemicity level? (c) Chemoprophylaxis for travelers? (d) Control measures.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>(a) Calculations:</h4>
+        <ul>
+          <li><strong>Splenic Index</strong> = (40/200) × 100 = <strong>20%</strong></li>
+          <li><strong>Parasite Index</strong> = (12/100) × 100 = <strong>12%</strong></li>
+          <li><strong>Sporozoite Index</strong> = (8/100) × 100 = <strong>8%</strong></li>
+        </ul>
+        <h4>(b) Endemicity level:</h4>
+        <p>Sporozoite Index = 8% → <strong>Less than 10% → Low endemicity</strong></p>
+        <h4>(c) Chemoprophylaxis for travelers:</h4>
+        <p>Chloroquine phosphate 500 mg/week for average adult; start before travel; continue 4–6 weeks after leaving.</p>
+        <h4>(d) Control measures:</h4>
+        <ul>
+          <li>Drain stagnant water and eliminate breeding sites</li>
+          <li>Larviciding and indoor residual spraying</li>
+          <li>Bed nets + repellents for community</li>
+          <li>Early case finding and treatment with antimalarials</li>
+          <li>Health education</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ CH10 EMERGING ══════════════ -->
+<div class="chapter" id="ch10">
+  <div class="chapter-header">10 — EMERGING & RE-EMERGING DISEASES</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-def">Define</span><span class="aplus">A++</span></div>
+        <div class="q-text">Define: Emerging and Re-emerging Infectious Diseases. Give 3 examples of each.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Emerging:</strong> Newly identified or previously unknown infection causing local or international public health problems.</p>
+        <p><strong>Examples:</strong> HIV, COVID-19, SARS, MERS, Ebola, Zika, Dengue, West Nile, E. coli O157:H7</p>
+        <p><strong>Re-emerging:</strong> Previously controlled infections now showing upward trends in incidence/prevalence.</p>
+        <p><strong>Examples:</strong> Malaria, Tuberculosis, Cholera, Pertussis, Influenza, Gonorrhea</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the contributing factors to emerging and re-emerging diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Agent-related:</h4>
+        <ul><li>Evolution of pathogens</li><li>Drug resistance</li><li>Vector resistance</li></ul>
+        <h4>Host-related:</h4>
+        <ul><li>Demographic change (population growth, aging)</li><li>Unsafe behaviors</li><li>Immunosuppression</li><li>Poverty</li></ul>
+        <h4>Environmental:</h4>
+        <ul><li>Climate change</li><li>Urbanization and deforestation</li><li>Technology/industry</li><li>International travel and trade</li><li>Breakdown of public health measures</li><li>Weak surveillance systems</li></ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Ebola Virus Disease: agent, reservoir, transmission, incubation, clinical picture, treatment, and vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Genus Ebolavirus (4 species infect humans)</td></tr>
+          <tr><td>Reservoir</td><td>Monkeys, gorillas, chimpanzees, cats, dogs, pigs (bats suspected)</td></tr>
+          <tr><td>Transmission</td><td>Animal-to-human (spillover); human-to-human (blood, body fluids, contaminated objects, sexual)</td></tr>
+          <tr><td>Incubation</td><td>2–21 days (average 8–10 days)</td></tr>
+          <tr><td>Clinical picture</td><td>Fever, headache, muscle pain, weakness, diarrhea, vomiting, abdominal pain, unexplained hemorrhage</td></tr>
+          <tr><td>Recovery</td><td>Depends on supportive care + immune response; antibody immunity up to 10 years</td></tr>
+          <tr><td>Treatment</td><td>Supportive (fluids, electrolytes, fever/pain management); no FDA-approved antivirals</td></tr>
+        </table>
+        <h4>Prevention:</h4>
+        <ul>
+          <li>Avoid contact with blood/body fluids of patients</li>
+          <li>Avoid unsafe burials and bushmeat</li>
+        </ul>
+        <table>
+          <tr><th>Vaccine</th><th>Details</th></tr>
+          <tr><td>Ervebo®</td><td>Single dose; licensed 2019; protects against Zaire ebolavirus; for adults ≥18 at occupational risk</td></tr>
+          <tr><td>Zabdeno + Mvabea</td><td>2-dose regimen; for ≥1 year; Zabdeno first, then Mvabea 8 weeks later</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Ervebo and Zabdeno+Mvabea vaccines for Ebola.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Ervebo®</th><th>Zabdeno + Mvabea</th></tr>
+          <tr><td>Doses</td><td>Single dose</td><td>2 doses (8 weeks apart)</td></tr>
+          <tr><td>Age group</td><td>≥18 years</td><td>≥1 year</td></tr>
+          <tr><td>Target organism</td><td>Zaire ebolavirus</td><td>Ebola (broader)</td></tr>
+          <tr><td>Licensed</td><td>2019</td><td>More recent</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the epidemiology and prevention of Monkeypox: agent, transmission, incubation, period of infectivity, and vaccines with indications.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Parameter</th><th>Details</th></tr>
+          <tr><td>Agent</td><td>Monkeypox virus (orthopoxvirus; related to variola)</td></tr>
+          <tr><td>Transmission</td><td>Close contact (skin-to-skin, rash, scabs, body fluids), contaminated objects, respiratory secretions</td></tr>
+          <tr><td>Incubation</td><td>3–17 days</td></tr>
+          <tr><td>Period of infectivity</td><td>From symptom onset until rash fully heals</td></tr>
+        </table>
+        <h4>Vaccines:</h4>
+        <table>
+          <tr><th>Vaccine</th><th>Doses</th></tr>
+          <tr><td>JYNNEOS</td><td>Two-dose vaccine</td></tr>
+          <tr><td>ACAM2000</td><td>Single-dose vaccine</td></tr>
+        </table>
+        <h4>Indications:</h4>
+        <ul>
+          <li>Contacts of confirmed cases</li>
+          <li>People with multiple sexual partners in the past 2 weeks in outbreak areas</li>
+          <li>Laboratory workers handling the virus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Monkeypox and Smallpox regarding: agent family, current status, and available vaccines.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Monkeypox</th><th>Smallpox</th></tr>
+          <tr><td>Agent family</td><td>Orthopoxvirus</td><td>Orthopoxvirus (Variola)</td></tr>
+          <tr><td>Current status</td><td>Active — outbreaks ongoing</td><td>Eradicated in 1979</td></tr>
+          <tr><td>Vaccines</td><td>JYNNEOS (2 doses), ACAM2000 (1 dose)</td><td>Historical calf lymph vaccine; ACAM2000, APSV</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List 5 examples of emerging diseases and 5 examples of re-emerging diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Emerging:</strong> HIV, COVID-19, SARS, Ebola, Zika</p>
+        <p><strong>Re-emerging:</strong> Malaria, Tuberculosis, Cholera, Influenza, Pertussis</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: Role of climate change and urbanization in the emergence of new infectious diseases.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Climate change:</strong> Expands geographic range of vectors (e.g., Anopheles mosquitoes → malaria in new regions); alters transmission seasons; creates favorable conditions for pathogen survival</li>
+          <li><strong>Urbanization:</strong> Overcrowding → faster spread of respiratory infections; poor sanitation → waterborne/foodborne outbreaks; deforestation → increased human-animal interface → zoonotic spillover (Ebola, Nipah)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+HTMLEOF
+echo "CH9+CH10 done"
+<!-- ══════════════ CH11 NCDs ══════════════ -->
+<div class="chapter" id="ch11">
+  <div class="chapter-header">11 — NON-COMMUNICABLE DISEASES (HTN & Cancer)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Hypertension (numeric criteria).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Blood pressure with <strong>systolic ≥140 mmHg</strong> and/or <strong>diastolic ≥90 mmHg</strong>, or being on antihypertensive treatment.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Essential (Primary) and Secondary Hypertension.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Essential (Primary)</th><th>Secondary</th></tr>
+          <tr><td>Cause</td><td>Unknown</td><td>Identified underlying condition</td></tr>
+          <tr><td>Frequency</td><td>Most common (90–95%)</td><td>Less common (5–10%)</td></tr>
+          <tr><td>Examples of causes</td><td>—</td><td>Renal disease, adrenal disease, pregnancy, medications</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the risk factors of Hypertension (modifiable and non-modifiable).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Modifiable:</h4>
+        <ul>
+          <li>Unhealthy diet (excess salt, fats; low fruits/vegetables)</li>
+          <li>Physical inactivity</li>
+          <li>Tobacco use</li>
+          <li>Alcohol consumption</li>
+          <li>Obesity</li>
+        </ul>
+        <h4>Non-modifiable:</h4>
+        <ul>
+          <li>Family history</li>
+          <li>Age &gt;65 years</li>
+          <li>Comorbidities (diabetes, kidney disease)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the epidemiological data of Hypertension by age group (CDC 2015–2016).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Group</th><th>Prevalence</th></tr>
+          <tr><td>Overall</td><td>29%</td></tr>
+          <tr><td>Age 18–39</td><td>7.5%</td></tr>
+          <tr><td>Age 40–59</td><td>33.2%</td></tr>
+          <tr><td>Age ≥60</td><td>63.1%</td></tr>
+          <tr><td>Men</td><td>30.2%</td></tr>
+          <tr><td>Women</td><td>27.7%</td></tr>
+          <tr><td>Controlled HTN</td><td>48.3%</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the Prevention of Hypertension: primordial, primary, secondary prevention + screening intervals + DASH diet.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li><strong>Primordial:</strong> Prevent childhood obesity; regulate salt in restaurants and processed food</li>
+          <li><strong>Primary:</strong> Healthy diet, physical activity, avoid tobacco/alcohol, reduce fats/trans-fats, salt &lt;5 g/day</li>
+        </ul>
+        <h4>Secondary Prevention:</h4>
+        <ul>
+          <li><strong>Screening:</strong> Annually for ≥40 years or high-risk individuals; every 3–5 years for low-risk aged 18–39 years</li>
+          <li>Proper treatment: stress management, regular BP monitoring, treat comorbidities</li>
+        </ul>
+        <h4>DASH Diet:</h4>
+        <table>
+          <tr><th>Component</th><th>Recommendation</th></tr>
+          <tr><td>Sodium</td><td>≤2300 mg/day</td></tr>
+          <tr><td>Nutrients emphasized</td><td>Potassium, calcium, magnesium, fiber, protein</td></tr>
+          <tr><td>Grains</td><td>6–8 servings/day</td></tr>
+          <tr><td>Vegetables</td><td>4–5 servings/day</td></tr>
+          <tr><td>Fruits</td><td>4–5 servings/day</td></tr>
+          <tr><td>Dairy</td><td>Low-fat</td></tr>
+          <tr><td>Protein</td><td>Lean meats, fish</td></tr>
+          <tr><td>Nuts/legumes</td><td>4–5 servings/week</td></tr>
+          <tr><td>Oils</td><td>2–3 servings/day</td></tr>
+          <tr><td>Sweets</td><td>≤5 servings/week</td></tr>
+          <tr><td>Fat type</td><td>Low in saturated fat</td></tr>
+        </table>
+        <p><strong>Tertiary:</strong> Rehabilitation to reduce disability after cardiovascular accidents.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-det">Determine with examples</span></div>
+        <div class="q-text">Determine: Recommended sodium in DASH diet? List 2 food groups rich in potassium/calcium.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Sodium:</strong> ≤2300 mg/day</p>
+        <p><strong>Rich in potassium/calcium:</strong></p>
+        <ul>
+          <li>Fruits (4–5 servings/day) — e.g., bananas, oranges</li>
+          <li>Low-fat dairy (calcium source) — e.g., yogurt, milk</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-note">Short Note</span><span class="aplus">A++</span></div>
+        <div class="q-text">Short note on: DASH Diet.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>DASH (Dietary Approaches to Stop Hypertension): rich in potassium, calcium, magnesium, fiber, protein; low in saturated fat; sodium ≤2300 mg/day. Grains 6–8/day; Vegetables 4–5/day; Fruits 4–5/day; Nuts 4–5/week; Sweets ≤5/week.</p>
+      </div>
+    </div>
+
+    <!-- Cancer -->
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Cancer.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>Abnormal proliferation of cells forming a mass that invades and destroys surrounding tissues, and may metastasize to distant sites.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-enum">Enumerate</span><span class="aplus">A++</span></div>
+        <div class="q-text">Enumerate the risk factors/etiology of Cancer with approximate % contribution.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Food type, cooking methods, preservatives — <strong>≈35%</strong></li>
+          <li>Smoking — <strong>≈30%</strong></li>
+          <li>Infectious agents: HPV (cervical), HBV/HCV (liver), bilharziasis (bladder)</li>
+          <li>Genetics (e.g., familial polyposis)</li>
+          <li>Drugs and hormones</li>
+          <li>Occupational hazards (asbestos, radiation)</li>
+          <li>Environmental pollution and pesticides</li>
+          <li>Aflatoxin (liver cancer)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the Prevention of Cancer: primary, secondary (screening per cancer type), and tertiary.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Primary prevention:</h4>
+        <ul>
+          <li>Stop smoking and alcohol</li>
+          <li>Avoid preservatives and very spicy foods</li>
+          <li>Safe grain storage (prevent aflatoxin)</li>
+          <li>Avoid unnecessary hormones</li>
+          <li>HBV vaccination (prevents liver cancer)</li>
+          <li>Early treatment of premalignant conditions</li>
+          <li>Control radiation exposure</li>
+          <li>Organic farming, pollution control</li>
+          <li>Encourage breastfeeding</li>
+        </ul>
+        <h4>Secondary prevention (screening):</h4>
+        <table>
+          <tr><th>Cancer</th><th>Screening method</th></tr>
+          <tr><td>Breast</td><td>Mammography</td></tr>
+          <tr><td>Cervix</td><td>Cervical smear (Pap smear)</td></tr>
+          <tr><td>Lung</td><td>Sputum cytology + chest X-ray</td></tr>
+          <tr><td>Liver</td><td>AFP (alpha-fetoprotein) tumor marker</td></tr>
+          <tr><td>Any</td><td>Biopsy, tumor markers, periodic follow-up</td></tr>
+        </table>
+        <h4>Tertiary prevention:</h4>
+        <ul>
+          <li>Rehabilitation and psychological support</li>
+          <li>Palliative care to maximize quality of life</li>
+          <li>Periodic follow-up to prevent/delay complications</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-list">List</span></div>
+        <div class="q-text">List the screening methods used in secondary prevention of Cancer (specify organ for each).</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Mammography → Breast</li>
+          <li>Cervical smear (Pap) → Cervix</li>
+          <li>Sputum cytology + X-ray → Lung</li>
+          <li>AFP → Liver</li>
+          <li>Biopsy → Any suspected mass</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q12</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between HTN and Cancer regarding modifiable risk factors and primary prevention strategies.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>HTN</th><th>Cancer</th></tr>
+          <tr><td>Main modifiable RF</td><td>Salt, inactivity, obesity, smoking, alcohol</td><td>Smoking (30%), diet (35%), infections, radiation</td></tr>
+          <tr><td>Common RFs</td><td>Smoking, alcohol, unhealthy diet</td><td>Smoking, alcohol, unhealthy diet</td></tr>
+          <tr><td>Specific primary prevention</td><td>DASH diet, salt &lt;5g/day, BP screening</td><td>HBV vaccine, cancer screening, avoid carcinogens</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ CH12 NUTRITION ══════════════ -->
+<div class="chapter" id="ch12">
+  <div class="chapter-header">12 — NUTRITION (Vulnerable Groups)</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the nutritionally vulnerable groups.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Infants</li>
+          <li>Preschool children</li>
+          <li>School children</li>
+          <li>Pregnant women</li>
+          <li>Lactating women</li>
+          <li>Elderly</li>
+          <li>Vegetarians</li>
+          <li>Athletes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the nutritional needs and challenges of the Elderly.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Age-related changes:</h4>
+        <ul>
+          <li>Decline in basal metabolism + increased adipose tissue</li>
+          <li>Reduced physical activity → lower energy needs → nutrient-dense diet required</li>
+          <li>Decreased bone density → calcium/vitamin D needs remain high</li>
+          <li>Decreased immune function</li>
+          <li>Decreased taste and smell → reduced appetite</li>
+          <li>Decreased nutrient absorption</li>
+          <li>Dehydration risk: impaired thirst sensation + hormonal regulation → <strong>water is the most important nutrient</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q3</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the age-related changes affecting nutrition in the elderly.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Decline in basal metabolism</li>
+          <li>Increased adipose tissue</li>
+          <li>Reduced physical activity</li>
+          <li>Decreased bone density</li>
+          <li>Decreased immune function</li>
+          <li>Decreased taste and smell</li>
+          <li>Decreased nutrient absorption</li>
+          <li>Decreased appetite</li>
+          <li>Impaired thirst sensation and hormonal regulation → dehydration risk</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q4</span><span class="q-type type-def">Define</span></div>
+        <div class="q-text">Define: Vegetarianism. What are the different types?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p>A diet that <strong>excludes meat, fish, poultry, eggs, milk, and honey</strong> (in strict forms).</p>
+        <table>
+          <tr><th>Type</th><th>What is excluded</th><th>What is included</th></tr>
+          <tr><td>Lacto-vegetarian</td><td>Meat, fish, eggs</td><td>Milk and dairy</td></tr>
+          <tr><td>Ovo-vegetarian</td><td>Meat, fish, dairy</td><td>Eggs only</td></tr>
+          <tr><td>Semi-vegetarian</td><td>Meat only</td><td>Fish, dairy, eggs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q5</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the Nutrition of Vegetarians: types, factors influencing choice, benefits, and hazards.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Types:</h4>
+        <p>Lacto-vegetarian, Ovo-vegetarian, Semi-vegetarian (see Q4)</p>
+        <h4>Factors influencing choice:</h4>
+        <ul><li>Religion, culture, ethics, environment, economy, politics, taste, morbidity/mortality concerns</li></ul>
+        <h4>Benefits (if well-planned):</h4>
+        <ul>
+          <li>Reduces risk of cancer</li>
+          <li>Reduces risk of ischemic heart disease (IHD)</li>
+          <li>Reduces risk of hypertension</li>
+          <li>Reduces risk of obesity</li>
+        </ul>
+        <h4>Hazards:</h4>
+        <ul>
+          <li><strong>Vitamin B12 deficiency</strong> — found only in animal protein; strict vegetarians cannot obtain it from plant sources</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q6</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between Lacto-vegetarian, Ovo-vegetarian, and Semi-vegetarian diets.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Type</th><th>Excludes</th><th>Consumes</th></tr>
+          <tr><td>Lacto-vegetarian</td><td>Meat, fish, poultry, eggs</td><td>Milk and dairy products</td></tr>
+          <tr><td>Ovo-vegetarian</td><td>Meat, fish, poultry, dairy</td><td>Eggs only</td></tr>
+          <tr><td>Semi-vegetarian</td><td>Meat only</td><td>Fish, eggs, dairy</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q7</span><span class="q-type type-det">Determine with examples</span></div>
+        <div class="q-text">Determine: Which vitamin deficiency is the main hazard of strict vegetarianism? Why can it not be obtained from plant sources?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>Vitamin B12 deficiency</strong></p>
+        <p>Vitamin B12 is found <strong>exclusively in animal-derived foods</strong> (meat, fish, dairy, eggs). Plants do not synthesize B12 — therefore strict vegetarians (vegans) cannot obtain it from their diet and require supplementation.</p>
+        <p><em>Consequences:</em> Megaloblastic anemia, peripheral neuropathy, subacute combined degeneration of the spinal cord.</p>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q8</span><span class="q-type type-disc">Discuss</span><span class="aplus">A++</span></div>
+        <div class="q-text">Discuss the Nutrition of Athletes: hydration, fuel composition, and recovery nutrition.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>Hydration:</h4>
+        <ul>
+          <li>Pre-workout: drink water 2–3 hours before exercise</li>
+          <li>Hydrate during warm-ups</li>
+          <li>Replace fluid + sodium during exercise to prevent dehydration</li>
+        </ul>
+        <h4>Fuel for Muscles:</h4>
+        <ul>
+          <li><strong>Carbohydrates:</strong> ¾ of plate (main energy source)</li>
+          <li><strong>Protein:</strong> ¼ of plate (lean meats, poultry, fish, low-fat dairy, beans)</li>
+          <li>Include vegetables and fruits</li>
+          <li>Eat 5–6 meals/day to maintain energy levels</li>
+        </ul>
+        <h4>Recovery After Exercise:</h4>
+        <ul>
+          <li><strong>Carbohydrates:</strong> Restore glycogen stores</li>
+          <li><strong>Protein:</strong> 12–25 g within 30–60 minutes post-exercise to repair muscle tissue</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q9</span><span class="q-type type-enum">Enumerate</span></div>
+        <div class="q-text">Enumerate the nutritional recommendations for recovery after exercise in athletes.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Carbohydrates to restore glycogen stores</li>
+          <li>Protein: 12–25 g within 30–60 minutes to repair muscle</li>
+          <li>Adequate fluid replacement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q10</span><span class="q-type type-comp">Compare</span></div>
+        <div class="q-text">Compare between the nutritional needs of the Elderly, Vegetarians, and Athletes regarding: main concern, key deficiency risk, and most important nutrient.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <table>
+          <tr><th>Feature</th><th>Elderly</th><th>Vegetarians</th><th>Athletes</th></tr>
+          <tr><td>Main concern</td><td>Reduced metabolism, dehydration risk, bone loss</td><td>Nutritional completeness of diet</td><td>Energy balance, performance, recovery</td></tr>
+          <tr><td>Key deficiency risk</td><td>Calcium, Vitamin D, dehydration</td><td>Vitamin B12</td><td>Carbohydrate depletion, dehydration</td></tr>
+          <tr><td>Most important nutrient</td><td>Water</td><td>Vitamin B12 (supplement)</td><td>Carbohydrates (main fuel)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q11</span><span class="q-type type-note">Short Note</span></div>
+        <div class="q-text">Short note on: Why water is the most important nutrient for the elderly.</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <ul>
+          <li>Elderly have impaired thirst sensation → they don't feel thirsty even when dehydrated</li>
+          <li>Hormonal regulation of fluid balance is impaired (e.g., decreased ADH response)</li>
+          <li>Dehydration in the elderly can cause confusion, falls, urinary tract infections, and serious cardiovascular events</li>
+          <li>Therefore, <strong>water is considered the most important nutrient</strong> in this age group</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ ENVIRONMENT CASES ══════════════ -->
+<div class="chapter" id="env-case">
+  <div class="chapter-header">CASE — Environmental Health</div>
+  <div class="chapter-body">
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q1</span><span class="q-type type-case">Case — Environment</span></div>
+        <div class="case-box"><strong>Water Case:</strong> After flooding, multiple cases of acute diarrhea, vomiting, dehydration over 3 days. All ages and sexes. Common unchlorinated water supply suspected.</div>
+        <div class="q-text">(a) Criteria confirming waterborne epidemic? (b) Possible biological agents? (c) Immediate control? (d) Large-scale water purification?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <h4>(a) Waterborne epidemic criteria (all present here):</h4>
+        <ul>
+          <li>Sudden onset</li>
+          <li>Many cases in few days</li>
+          <li>Common water source</li>
+          <li>All ages and sexes affected</li>
+          <li>Multiple family cases</li>
+          <li>Any season (flooding → any time)</li>
+        </ul>
+        <h4>(b) Possible biological agents:</h4>
+        <ul>
+          <li>Bacteria: Vibrio cholerae, Shigella, Salmonella</li>
+          <li>Viruses: Hepatitis A, Poliovirus, Rotavirus</li>
+          <li>Parasites: Giardia, Cryptosporidium</li>
+        </ul>
+        <h4>(c) Immediate control:</h4>
+        <ul>
+          <li>Identify and treat the contaminated water source</li>
+          <li>Super-chlorinate the water supply</li>
+          <li>Neutralize excess chlorine</li>
+          <li>Monitor for secondary cases</li>
+          <li>ORS/IV rehydration for affected cases</li>
+        </ul>
+        <h4>(d) Large-scale purification:</h4>
+        <ul>
+          <li>Filtration (sand on gravel — removes 95% of bacteria/cysts)</li>
+          <li>Chlorination (0.6 ppm dose; 0.2 ppm residual)</li>
+          <li>Super-chlorination in epidemic settings</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-head">
+        <div class="q-meta"><span class="q-num">Q2</span><span class="q-type type-case">Case — Environment</span></div>
+        <div class="case-box"><strong>Mercury Case:</strong> Coastal fishing community — neurological symptoms (tremors, memory loss, sensory disturbances) in adults + developmental delays in children. Main diet: large predatory fish from an industrially contaminated bay.</div>
+        <div class="q-text">(a) Type of poisoning + classical historical example? (b) Mechanism of mercury accumulation in fish? (c) Health effects? (d) Preventive measures?</div>
+        <button class="toggle-btn" onclick="tog(this)">Show Answer ▼</button>
+      </div>
+      <div class="answer-box">
+        <div class="ans-label">Answer</div>
+        <p><strong>(a) Methyl mercury poisoning (environmental)</strong> — Classical example: <strong>Minamata disease</strong> (Japan, 1950s — industrial mercury discharged into Minamata Bay → fish → community).</p>
+        <p><strong>(b) Mechanism — Bioaccumulation/Biomagnification:</strong> Mercury from industrial sources is converted to methyl mercury by aquatic bacteria → absorbed by small fish → concentrated in larger predatory fish → highest levels at top of food chain (tuna, swordfish, shark).</p>
+        <h4>(c) Health effects:</h4>
+        <ul>
+          <li>Neurological damage: tremors, memory loss, sensory disturbances, ataxia</li>
+          <li>Birth defects and developmental delays in children (prenatal exposure)</li>
+          <li>Cancer and genetic damage</li>
+        </ul>
+        <h4>(d) Preventive measures:</h4>
+        <ul>
+          <li>Regulate industrial discharge into water bodies</li>
+          <li>Avoid consumption of large predatory fish (especially for pregnant women and children)</li>
+          <li>Regular monitoring of fish mercury levels</li>
+          <li>Health education for fishing communities</li>
+          <li>Avoid broken thermometers, dental amalgams where alternatives exist</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+function tog(btn) {
+  const box = btn.closest('.q-head').nextElementSibling;
+  const open = box.classList.toggle('visible');
+  btn.textContent = open ? 'Hide Answer ▲' : 'Show Answer ▼';
+  btn.classList.toggle('open', open);
+}
+</script>
+</body>
+</html>
